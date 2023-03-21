@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:visitor_app_flutter/DashBoard.dart';
 import 'package:visitor_app_flutter/models/LoginResponse.dart';
 import 'package:http/http.dart' as http;
-import 'Animation/FadeAnimation.dart';
 import 'network/api_service.dart';
 
 
@@ -65,8 +64,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> logIn(String userId, String password) async {
     print(userId);
     print(password);
-    Map<String, dynamic> body = { 'UserName': "SAdmin",
-      'Password': "12345",
+    Map<String, dynamic> body = { 'UserName': userId,
+      'Password': password,
       'LastLoginWith': 'W',
       'DisplayCode': 'RAMFAG',
       'GroupCode': '01',
@@ -89,6 +88,9 @@ class _MyHomePageState extends State<MyHomePage> {
   if(loginResponse.userName!=null){
     _sendDataToSecondScreen(context,loginResponse);
   }else{
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("User Id or Password Incorrect"),
+    ));
   }
 
   }
@@ -133,41 +135,41 @@ class _MyHomePageState extends State<MyHomePage> {
                         left: 30,
                         width: 80,
                         height: 200,
-                        child: FadeAnimation(1, Container(
+                        child: Container(
                           decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage('assets/images/light-1.png')
                               )
                           ),
-                        )),
+                        ),
                       ),
                       Positioned(
                         left: 140,
                         width: 80,
                         height: 150,
-                        child: FadeAnimation(1.3, Container(
+                        child:  Container(
                           decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage('assets/images/light-2.png')
                               )
                           ),
-                        )),
+                        ),
                       ),
                       Positioned(
                         right: 40,
                         top: 40,
                         width: 80,
                         height: 150,
-                        child: FadeAnimation(1.5, Container(
+                        child: Container(
                           decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage('assets/images/clock.png')
                               )
                           ),
-                        )),
+                        ),
                       ),
                       Positioned(
-                        child: FadeAnimation(1.6, Container(
+                        child:Container(
                           margin: EdgeInsets.only(top: 50),
                           child: Center(
                             child: Text("Login to Visitor App", style: TextStyle( shadows: <Shadow>[
@@ -177,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               color: Colors.white38,
                             )],color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold,fontFamily: "Nexa"),),
                           ),
-                        )),
+                        ),
                       )
                     ],
                   ),
@@ -186,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: EdgeInsets.all(30.0),
                   child: Column(
                     children: <Widget>[
-                      FadeAnimation(1.8, Container(
+                      Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -244,13 +246,13 @@ class _MyHomePageState extends State<MyHomePage> {
                             )
                           ],
                         ),
-                      )),
+                      ),
                       SizedBox(height: 70,),
                       GestureDetector(
                         onTap: (){
                           logIn(userIdController.text.toString(),passwordController.text.toString());
                         },
-                        child: FadeAnimation(5, Container(
+                        child:  Container(
                           height: 50,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
@@ -264,11 +266,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: Center(
                             child: Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontFamily: 'RaleWay',),),
                           ),
-                        )),
+                        ),
                       ),
 
                       SizedBox(height: 70,),
-                      FadeAnimation(1.5, Text("Forgot Password?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),)),
+                      Text("Forgot Password?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),),
                     ],
                   ),
                 )

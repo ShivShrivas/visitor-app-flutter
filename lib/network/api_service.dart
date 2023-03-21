@@ -11,8 +11,6 @@ abstract class ApiService {
     factory ApiService(Dio dio, {required String baseUrl}){
 
       dio.options=BaseOptions(
-        receiveTimeout: 3000,
-        connectTimeout: 3000,
         contentType: 'Application/json',
 
       );
