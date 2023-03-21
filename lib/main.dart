@@ -65,8 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> logIn(String userId, String password) async {
     print(userId);
     print(password);
-    Map<String, dynamic> body = { 'UserName': userId,
-      'Password': password,
+    Map<String, dynamic> body = { 'UserName': "SAdmin",
+      'Password': "12345",
       'LastLoginWith': 'W',
       'DisplayCode': 'RAMFAG',
       'GroupCode': '01',

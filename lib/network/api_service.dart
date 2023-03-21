@@ -1,6 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/retrofit.dart';
 import 'dart:async';
 
