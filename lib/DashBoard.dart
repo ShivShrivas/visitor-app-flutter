@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:visitor_app_flutter/NotificationPage.dart';
+import 'package:visitor_app_flutter/UserProfile.dart';
 import 'package:visitor_app_flutter/models/LoginResponse.dart';
 import 'package:http/http.dart' as http;
 import 'package:visitor_app_flutter/models/PurposeResponse.dart';
@@ -106,7 +107,13 @@ TextEditingController dateController=TextEditingController();
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => UserProfile(),
+                                          ));
+                                    },
                                     child: Container(
                                       clipBehavior: Clip.antiAlias,
                                       // child:  Image.network('https://picsum.photos/250?image=9'),
