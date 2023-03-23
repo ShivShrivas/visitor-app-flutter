@@ -24,9 +24,9 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
    late List<PurposeResponse> currencies;
+   late final List<String> purposes;
 
-
-   PurposeResponse? selectedPurpose;
+    String selectedPurpose="";
 
 TextEditingController timeController=TextEditingController();
 TextEditingController dateController=TextEditingController();
@@ -60,7 +60,8 @@ TextEditingController dateController=TextEditingController();
       currencies = (json.decode(response.body) as List)
           .map((i) => PurposeResponse.fromJson(i))
           .toList();
-        selectedPurpose=currencies[0];
+       purposes = currencies.map((currencies) => currencies.purposeName.toString()).toList();
+
     });
     print(currencies[0].purposeName);
   }
@@ -206,134 +207,152 @@ TextEditingController dateController=TextEditingController();
                 return AlertDialog(
                   scrollable: true,
                   title: Text('Schedule Meetings'),
-                  content: Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child: Form(
-                      child: Column(
-                        children: <Widget>[
-                          TextFormField(
-                            decoration: InputDecoration(
-                              labelText: 'Name',
-                              icon: Icon(Icons.account_box),
-                            ),
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              labelText: 'Email',
-                              icon: Icon(Icons.email),
-                            ),
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              labelText: 'Mobile',
-                              icon: Icon(Icons.call),
-                            ),
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              labelText: 'Meeting with',
-                              icon: Icon(Icons.people),
-                            ),
-                          ),
-                          Row(
-
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(
-                                Icons.speaker_notes,
-                                color: Colors.grey,
+                  content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+                    return Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: Form(
+                        child: Column(
+                          children: <Widget>[
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: 'Name',
+                                icon: Icon(Icons.account_box),
                               ),
-                              Container(
-                                height: 60,
-                                width: 200,
-                                child: DropdownButton<PurposeResponse>(
-                                  alignment: Alignment.center,
-
-                                  value: selectedPurpose,
-
-
-                                  onChanged: (PurposeResponse? data) {
-                                      print(data?.purposeName.toString());
-                                      selectedPurpose = data!;
-                                      // _chapterCode = selectChapterCode!.Code;
-
-                                  },
-                                  items: currencies.map((PurposeResponse data) {
-                                    return DropdownMenuItem<PurposeResponse>(
-                                      child: Text("  " + data.purposeName.toString(),
-                                          style: const TextStyle(
-                                              fontSize: 12.0,
-                                              fontFamily: 'Montserrat',
-                                              fontWeight: FontWeight.w700)),
-                                      value: data,
-                                    );
-                                  }).toList(),
-
-                                  hint: const Text(
-                                    "Select Purpose",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                              )
-
-                            ],
-                          ),
-                          TextFormField(
-                          controller: timeController,
-
-                            onTap: () async {
-                              print("done");
-                              TimeOfDay? time = await getTime(
-                                context: context,
-                                title: "Select Your Time",
-
-                              );
-                              final localizations = MaterialLocalizations.of(context);
-                              final formattedTimeOfDay = localizations.formatTimeOfDay(time!);
-                              timeController.text=formattedTimeOfDay;
-                              print(time);
-
-                            },
-                            decoration: InputDecoration(
-                              labelText: 'Time',
-                              icon: Icon(Icons.watch_later),
                             ),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: 'Email',
+                                icon: Icon(Icons.email),
+                              ),
+                            ),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: 'Mobile',
+                                icon: Icon(Icons.call),
+                              ),
+                            ),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: 'Meeting with',
+                                icon: Icon(Icons.people),
+                              ),
+                            ),
+                            Row(
 
-                          ),
-                          TextFormField(
-                            controller: dateController,
-                            onTap: () async{
-                              DateTime? date = DateTime(1900);
-                              FocusScope.of(context).requestFocus(FocusNode());
-                              date = await showDatePicker(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(
+                                  Icons.speaker_notes,
+                                  color: Colors.grey,
+                                ),
+                                Container(
+                                  height: 60,
+                                  width: 200,
+                                  child: DropdownButton<String>(
+                                    alignment: Alignment.center,
+                                    value: selectedPurpose,
+                                    items: [
+                                      const DropdownMenuItem(child: Text('Select Purpose'),
+                                          value: ""),
+                                      ...currencies.map<DropdownMenuItem<String>>((data){
+                                        return DropdownMenuItem(
+                                          child:Text(data.purposeName! ),
+                                          value: data.purposeName!,
+                                        );
+
+                                      }).toList(),
+
+                                    ],
+                                    onChanged: (data) {
+                                      print(data);
+                                      setState(() {
+                                        selectedPurpose = data!;
+                                        print(selectedPurpose);
+                                      });
+
+                                    },
+
+
+                                    // hint: const Text(
+                                    //   "Select Purpose",
+                                    //   style: TextStyle(
+                                    //       color: Colors.black,
+                                    //       fontSize: 11,
+                                    //       fontWeight: FontWeight.w500),
+                                    // ),
+                                  ),
+                                )
+
+                              ],
+                            ),
+                            TextFormField(
+                              controller: timeController,
+
+                              onTap: () async {
+                                print("done");
+                                TimeOfDay? time = await getTime(
                                   context: context,
-                                  initialDate:DateTime.now(),
-                                  firstDate:DateTime(1900),
-                                  lastDate: DateTime(2100));
+                                  title: "Select Your Time",
 
-                              dateController.text = "${date?.toLocal()}".split(' ')[0];
+                                );
+                                final localizations = MaterialLocalizations.of(context);
+                                final formattedTimeOfDay = localizations.formatTimeOfDay(time!);
+                                timeController.text=formattedTimeOfDay;
+                                print(time);
+
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'Time',
+                                icon: Icon(Icons.watch_later),
+                              ),
+
+                            ),
+                            TextFormField(
+                              controller: dateController,
+                              onTap: () async{
+                                DateTime? date = DateTime(1900);
+                                FocusScope.of(context).requestFocus(FocusNode());
+                                date = await showDatePicker(
+                                    context: context,
+                                    initialDate:DateTime.now(),
+                                    firstDate:DateTime(1900),
+                                    lastDate: DateTime(2100));
+
+                                dateController.text = "${date?.toLocal()}".split(' ')[0];
 
 
                               },
-                            decoration: InputDecoration(
+                              decoration: InputDecoration(
 
-                              labelText: 'Date',
-                              icon: Icon(Icons.calendar_month),
+                                labelText: 'Date',
+                                icon: Icon(Icons.calendar_month),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
                   actions: [
-                    MaterialButton(
-                        child: Text("Submit"),
-                        onPressed: () {
-                          // your code
-                        })
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        MaterialButton(
+                            child: Text("Cancle"),
+                            onPressed: () {
+                              // your code
+                            }),
+
+                        MaterialButton(
+                            child: Text("Schedule", style: TextStyle(
+                              color: Colors.indigo
+                            ),),
+                            onPressed: () {
+                              // your code
+                            }),
+                      ],
+                    )
+
                   ],
                 );
               });
