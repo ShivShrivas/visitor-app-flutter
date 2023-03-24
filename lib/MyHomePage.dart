@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'DashBoard.dart';
 import 'models/LoginResponse.dart';
@@ -49,17 +50,27 @@ class _MyHomePageState extends State<MyHomePage> {
       body: jsonBody,
       encoding: encoding,
     ));
-    print(response);
-    final List<dynamic> parsed = json.decode(response.body);
-    final loginResponse = LoginResponse.fromJson(parsed[0]);
+   if(response!=null){
+     final List<dynamic> parsed = json.decode(response.body);
+     final loginResponse = LoginResponse.fromJson(parsed[0]);
 
-    if(loginResponse.userName!=null){
-      _sendDataToSecondScreen(context,loginResponse);
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("User Id or Password Incorrect"),
-      ));
-    }
+     if(loginResponse.userName!=null){
+       SharedPreferences pref = await SharedPreferences.getInstance();
+
+       String user = jsonEncode(loginResponse);
+       pref.setString('userData', user);
+       _sendDataToSecondScreen(context,loginResponse);
+     }else{
+       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+         content: Text("User Id or Password Incorrect"),
+       ));
+     }
+   }else{
+     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+       content: Text("Something went wrong"),
+     ));
+   }
+
 
   }
 
@@ -90,6 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               children: <Widget>[
                 Container(
+                  width: double.maxFinite,
                   height: 350,
                   decoration: BoxDecoration(
                       image: DecorationImage(
@@ -100,29 +112,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Stack(
                     children: <Widget>[
                       Positioned(
-                        left: 30,
-                        width: 80,
-                        height: 160,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage('assets/images/light-1.png')
-                              )
-                          ),
+                        width: 200,
+                        height: 200,
+                        child:
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 100,),
+                            Text("Welcome",style: TextStyle(color:Colors.white70,fontSize: 26,fontWeight: FontWeight.w300),),
+                            Text("to",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w300,color: Colors.white60),),
+                            Text("Visitor App",style: TextStyle(fontSize: 35,fontWeight: FontWeight.w500,color: Colors.white),),
+                          ],
                         ),
                       ),
-                      Positioned(
-                        left: 140,
-                        width: 80,
-                        height: 150,
-                        child:  Container(
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage('assets/images/light-2.png')
-                              )
-                          ),
-                        ),
-                      ),
+
                       Positioned(
                         right: 40,
                         top: 40,
@@ -139,23 +142,20 @@ class _MyHomePageState extends State<MyHomePage> {
                       Positioned(
                         child:Container(
                           margin: EdgeInsets.only(top: 50),
-                          child: Center(
-                            child: Text("Login to Visitor App", style: TextStyle( shadows: <Shadow>[
-                              Shadow(
-                                offset: Offset(2.0, 2.0),
-                                blurRadius: 5.0,
-                                color: Colors.white38,
-                              )],color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold,fontFamily: "Nexa"),),
-                          ),
+
                         ),
                       )
                     ],
                   ),
                 ),
+
+         Text("Login Here", style: TextStyle(fontSize:18,wordSpacing: 2,color: Colors.black, fontWeight: FontWeight.bold,fontFamily: 'RaleWay',),),
+
                 Padding(
                   padding: EdgeInsets.all(30.0),
                   child: Column(
                     children: <Widget>[
+
                       Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
@@ -180,12 +180,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: TextField(
                                 controller:userIdController ,
                                 style: TextStyle(
-                                    fontSize: 20
+                                    fontSize:16
                                 ),
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
                                     hintText: "User ID",
-                                    hintStyle: TextStyle(color: Colors.grey[400],fontSize: 18),
+                                    hintStyle: TextStyle(color: Colors.grey[400],fontSize: 16),
                                     icon: Icon(Icons.account_circle),
                                     iconColor: Colors.deepPurple.shade100
 
@@ -197,14 +197,14 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: TextField(
                                 controller: passwordController,
                                 style: TextStyle(
-                                    fontSize: 20
+                                    fontSize: 16
 
                                 ),
                                 obscureText: true,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Password",
-                                  hintStyle: TextStyle(color: Colors.grey[400],fontSize: 18),
+                                  hintStyle: TextStyle(color: Colors.grey[400],fontSize: 16),
                                   icon: Icon(Icons.lock_open_sharp),
                                   iconColor: Colors.deepPurple.shade100,
 

@@ -84,108 +84,114 @@ TextEditingController dateController=TextEditingController();
           Padding(
             padding: EdgeInsets.all(0),
             child: Container(
-              alignment: Alignment.topCenter,
+              alignment: Alignment.center,
               decoration: BoxDecoration(
+
                   image: DecorationImage(
                       image: AssetImage('assets/images/background.png'),
                       fit: BoxFit.fill)),
-              height: 270,
-              child: SizedBox(
-                height: 230,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(left: 10, right: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Container(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => UserProfile(),
-                                          ));
-                                    },
-                                    child: Container(
-                                      clipBehavior: Clip.antiAlias,
-                                      // child:  Image.network('https://picsum.photos/250?image=9'),
-                                      width: 60.0,
-                                      height: 60.0,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          image: DecorationImage(
-                                              image: AssetImage(
-                                                  'assets/images/img.png'),
-                                              fit: BoxFit.cover),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(75.0)),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                blurRadius: 2.0,
-                                                color: Colors.black)
-                                          ]),
-                                    ),
-                                  ),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Container(
-                                      width: 210,
-                                      child: Text(
-                                        widget.loginResponse.userName,
-                                        style: GoogleFonts.openSans(
-                                          textStyle: TextStyle(
+              height: 280,
+              child:Column(
+                children: [
+                  SizedBox(
+                    height: 260,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Container(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => UserProfile(),
+                                              ));
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.all(5),
+                                          clipBehavior: Clip.antiAlias,
+                                          child:  Image.network('${widget.loginResponse.branchLogo.replaceAll("../", "http://stonemen.bsninfotech.org/")}'),
+                                          width: 70.0,
+                                          height: 70.0,
+                                          decoration: BoxDecoration(
                                               color: Colors.white,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
+                                           
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(75.0)),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    blurRadius: 2.0,
+                                                    color: Colors.black)
+                                              ]),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      widget.loginResponse.schoolAddress,
-                                      style: GoogleFonts.openSans(
-                                        textStyle: TextStyle(
-                                            color: Colors.white38,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600),
-                                      ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Container(
+                                          width: 200,
+                                          child: Text(
+                                            widget.loginResponse.userName,
+                                            style: GoogleFonts.openSans(
+                                              textStyle: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          widget.loginResponse.schoolAddress,
+                                          style: GoogleFonts.openSans(
+                                            textStyle: TextStyle(
+                                                color: Colors.white60,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => NotificationPage(),
+                                      ));
+                                },
+                                alignment: Alignment.centerLeft,
+                                icon: Image.asset("assets/images/notification.png",
+                                    width: 24),
+                              )
+                            ],
                           ),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => NotificationPage(),
-                                  ));
-                            },
-                            alignment: Alignment.centerLeft,
-                            icon: Image.asset("assets/images/notification.png",
-                                width: 24),
-                          )
-                        ],
-                      ),
+                        ),
+                        SizedBox(height: 30,),
+                        Text("Last Login : ${widget.loginResponse.lastLogin}",style: TextStyle(color: Colors.white),),
+
+
+                      ],
                     ),
-                    GestureDetector(
-                      child: Container(),
-                    ),
-                  ],
-                ),
+                  ),
+
+                ],
               ),
+
             ),
           ),
 
@@ -213,7 +219,7 @@ TextEditingController dateController=TextEditingController();
               builder: (BuildContext context) {
                 return AlertDialog(
                   scrollable: true,
-                  title: Text('Schedule Meetings'),
+                  title: Text('Schedule A Meeting'),
                   content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
                     return Padding(
                       padding: const EdgeInsets.all(0.0),
@@ -345,7 +351,7 @@ TextEditingController dateController=TextEditingController();
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         MaterialButton(
-                            child: Text("Cancle"),
+                            child: Text("Cancel"),
                             onPressed: () {
                               // your code
                             }),

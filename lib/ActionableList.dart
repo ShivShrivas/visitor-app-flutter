@@ -29,7 +29,7 @@ class _ActionableListState extends State<ActionableList> {
   }
   Widget visitorItemCard() {
     return Card(
-      color: Color.fromRGBO(246, 213, 255, 1.0),
+      color: Color.fromRGBO(255, 224, 213, 1.0),
       margin: EdgeInsets.all(5),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5), // if you need this

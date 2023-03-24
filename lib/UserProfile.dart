@@ -1,6 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:visitor_app_flutter/models/LoginResponse.dart';
+
+import 'Utils/AdaptiveTextSize.dart';
 
 class UserProfile extends StatefulWidget {
+
   const UserProfile({Key? key}) : super(key: key);
 
   @override
@@ -8,13 +15,42 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+    LoginResponse user=LoginResponse(userId: 0, userName: "", userTypeId: 0, loginAs: "", lastLogin: "", activeAcademicYearId: 0, activeAcademicYear: "", activeFinancialYearId: 0, activeFinancialYear: "", displayCode: "", relationshipId: 0, isHO: 0, isSchool: 0, isCollege: false, isSociety: false, branchLogo: "", groupCode: "", societyCode: "", schoolCode: "", branchCode: "", schoolName: "", schoolAddress: "", societyName: "", schoolLiveWebSiteUrl: "", schoolContactNo: "", schoolEmailId: "", bankFeePayMode: "", chqInfavourof: "", profilePic: "", mobileNo: "", emailId: "", code: "", departmentCode: "", designationCode: "", designation: "", affiliationNo: "", affiliationDate: 0, schoolStatus: "", schoolNo: "", srNo: "", state: 0, response: "");
+  @override
+   getDataFromSP() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    Map json = jsonDecode(pref.getString("userData").toString());
+    setState(() {
+      user = LoginResponse.fromJson(json);
+    });
 
+
+
+  }
+@override
+  void initState() {
+  getDataFromSP();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          body: Container(color: Colors.white54,
+
+          body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [
+
+
+                  Colors.white,
+                  Colors.white38
+  ]
+              ),
+            ),
             child: Column(
               children: [
                 const SizedBox(
@@ -29,10 +65,24 @@ class _UserProfileState extends State<UserProfile> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    CircleAvatar(
-                      maxRadius: 45,
-                      backgroundImage: AssetImage("assets/images/img.png"),
+                  children: [
+                    Container(
+
+                      padding: EdgeInsets.all(5),
+                      clipBehavior: Clip.antiAlias,
+                      child:  Image.network('${user.branchLogo.replaceAll("../", "http://stonemen.bsninfotech.org/")}'),
+                      width: 70.0,
+                      height: 70.0,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(75.0)),
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 2.0,
+                                color: Colors.black)
+                          ]),
                     ),
                   ],
                 ),
@@ -41,28 +91,35 @@ class _UserProfileState extends State<UserProfile> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text(
-                      "Thomas Shelby",
+                      user.userName.toString(),
+
                       style:
-                      TextStyle(fontWeight: FontWeight.w900, fontSize: 24),
+                      TextStyle(fontWeight: FontWeight.w900, fontSize:
+                      AdaptiveTextSize().getadaptiveTextSize(context, 20)),
                     )
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [Text("@peakyBlinders")],
+                  children:  [Text("Login As: ${user.loginAs}")],
                 ),
                 const SizedBox(
                   height: 7,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      "Master manipulator, deal-maker and\n                   entrepreneur",
-                      style: TextStyle(fontSize: 15),
-                    )
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children:  [
+                     Text(
+
+                        user.schoolName.toString()+"\n"+user.schoolAddress.toString(),
+                        style: TextStyle(fontSize:
+                        AdaptiveTextSize().getadaptiveTextSize(context, 15)),
+                      textAlign: TextAlign.center,),
+
+
                   ],
                 ),const SizedBox(
                   height: 15,
@@ -70,7 +127,8 @@ class _UserProfileState extends State<UserProfile> {
                 Container(
 
                   child: Expanded(
-                      child: ListView(
+                      child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Card(
                             margin:
