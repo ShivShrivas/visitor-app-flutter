@@ -9,6 +9,12 @@ class OnGoingMeetList extends StatefulWidget {
 }
 
 class _OnGoingMeetListState extends State<OnGoingMeetList> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+   getOnGoingList();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,4 +149,6 @@ class _OnGoingMeetListState extends State<OnGoingMeetList> {
       ),
     );
   }
+
+  void getOnGoingList() {}
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:visitor_app_flutter/models/MeetingWithResponse.dart';
 import 'package:visitor_app_flutter/NotificationPage.dart';
 import 'package:visitor_app_flutter/UserProfile.dart';
 import 'package:visitor_app_flutter/models/LoginResponse.dart';
@@ -25,22 +26,55 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
    late List<PurposeResponse> currencies;
+   late List<MeetingWithResponse> meetingWithResponseList;
+   late List<String> meetingWithPerson;
    late final List<String> purposes;
 
     String selectedPurpose="";
+    String selectedPerson="";
 
 TextEditingController timeController=TextEditingController();
 TextEditingController dateController=TextEditingController();
 
 
+   Future<void> getMeetingWithResponse() async {
+     Map<String, dynamic> body = {
+       "Action": 6,
+       "FYId": 1,
+       "SessionId": 1,
+       "RelationshipId": widget.loginResponse.relationshipId
+     };
+     String jsonBody = json.encode(body);
+     final encoding = Encoding.getByName('utf-8');
+     final url = Uri.parse(
+         'http://stonemen.bsninfotech.org/Api/VisitorTransactionApi/GetAppointment');
+     final headers = {'Content-Type': 'application/json'};
+     var response = (await http.post(
+       url,
+       headers: headers,
+       body: jsonBody,
+       encoding: encoding,
+     ));
+     print(response);
+     final List<dynamic> parsed = json.decode(response.body);
+     print(response.body);
 
+     setState(() {
+       meetingWithResponseList = (json.decode(response.body) as List)
+           .map((i) => MeetingWithResponse.fromJson(i))
+           .toList();
+       meetingWithPerson = meetingWithResponseList.map((meetingWithResponseList) => meetingWithResponseList.name.toString()).toList();
+
+     });
+     print(meetingWithPerson[0]);
+   }
 
   Future<void> getPurposeResponse() async {
     Map<String, dynamic> body = {
       "Action": 5,
       "FYId": 1,
       "SessionId": 1,
-      "RelationshipId": 1
+      "RelationshipId": widget.loginResponse.relationshipId
     };
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
@@ -71,6 +105,7 @@ TextEditingController dateController=TextEditingController();
   void initState() {
     setState(() {
       getPurposeResponse();
+      getMeetingWithResponse();
     });
   }
 
@@ -244,15 +279,58 @@ TextEditingController dateController=TextEditingController();
                                 icon: Icon(Icons.call),
                               ),
                             ),
-                            TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'Meeting with',
-                                icon: Icon(Icons.people),
-                              ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.person,
+                                  color: Colors.grey,
+                                ),
+                                Container(
+                                  height: 60,
+                                  width: 200,
+                                  child: DropdownButton<String>(
+                                    alignment: Alignment.center,
+                                    value: selectedPerson,
+                                    items: [
+                                      const DropdownMenuItem(child: Text('Meeting With',style: TextStyle(fontSize: 14),),
+                                          value: ""),
+                                      ...meetingWithResponseList.map<DropdownMenuItem<String>>((data){
+                                        return DropdownMenuItem(
+                                          child:Text(data.name!,style: TextStyle(fontSize: 14) ),
+                                          value: data.name!,
+                                        );
+
+                                      }).toList(),
+
+                                    ],
+                                    onChanged: (data) {
+                                      print(data);
+                                      setState(() {
+                                        selectedPerson = data!;
+                                        print(selectedPerson);
+                                      });
+
+                                    },
+
+
+                                    // hint: const Text(
+                                    //   "Select Purpose",
+                                    //   style: TextStyle(
+                                    //       color: Colors.black,
+                                    //       fontSize: 11,
+                                    //       fontWeight: FontWeight.w500),
+                                    // ),
+                                  ),
+                                )
+
+                              ],
                             ),
                             Row(
-
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
                                   Icons.speaker_notes,
@@ -265,11 +343,11 @@ TextEditingController dateController=TextEditingController();
                                     alignment: Alignment.center,
                                     value: selectedPurpose,
                                     items: [
-                                      const DropdownMenuItem(child: Text('Select Purpose'),
+                                      const DropdownMenuItem(child: Text('Select Purpose',style: TextStyle(fontSize: 14)),
                                           value: ""),
                                       ...currencies.map<DropdownMenuItem<String>>((data){
                                         return DropdownMenuItem(
-                                          child:Text(data.purposeName! ),
+                                          child:Text(data.purposeName! ,style: TextStyle(fontSize: 14)),
                                           value: data.purposeName!,
                                         );
 
