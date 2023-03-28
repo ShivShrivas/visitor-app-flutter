@@ -74,7 +74,7 @@ TextEditingController mobileController=TextEditingController();
      print(meetingWithPerson[0]);
    }
 
-  Future<void> scheduleAmeeting(String name, String email, String mobile, String time, String date) async {
+  Future<void> scheduleAmeeting(String name, String email, String mobile, String time, String date, BuildContext dialogContext) async {
 
     Map<String, dynamic> body = {
     "TransID":"","MeetingDate":date,"PVNo":"000005","MobileNo":mobile,
@@ -96,16 +96,25 @@ TextEditingController mobileController=TextEditingController();
     ));
     print(response.body);
 
-    if(identical(response.body,"1")){
+    if(response.body=='"1"'){
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Meeting Schedule Successfully')),
 
       );
+      setState(() {
+        Navigator.pop(dialogContext);
+        nameController.clear();
+        emailController.clear();
+        mobileController.clear();
+        timeController.clear();
+        dateController.clear();
 
+      });
     }else{
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Something went wrong')),
       );
+      Navigator.pop(dialogContext);
 
     }
 
@@ -291,10 +300,9 @@ TextEditingController mobileController=TextEditingController();
         ),
         backgroundColor: Colors.indigoAccent,
         onPressed: () {
-          BuildContext dialogContext;
           showDialog(
               context: context,
-              builder: (BuildContext context) {
+              builder: (BuildContext dialogContext) {
                 return AlertDialog(
                   scrollable: true,
                   title: Text('Schedule A Meeting'),
@@ -523,7 +531,7 @@ TextEditingController mobileController=TextEditingController();
                               if (_formKey.currentState!.validate()) {
                                 // If the form is valid, display a snackbar. In the real world,
                                 // you'd often call a server or save the information in a database.
-                                scheduleAmeeting(nameController.value.text,emailController.value.text,mobileController.value.text,timeController.value.text,dateController.value.text);
+                                scheduleAmeeting(nameController.value.text,emailController.value.text,mobileController.value.text,timeController.value.text,dateController.value.text,dialogContext);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Processing Data')),
                                 );
