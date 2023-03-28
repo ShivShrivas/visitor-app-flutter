@@ -5,7 +5,15 @@ import 'package:visitor_app_flutter/CompleteMeetList.dart';
 import 'package:visitor_app_flutter/OnGoingMeetList.dart';
 import 'package:visitor_app_flutter/ScheduleMeetList.dart';
 
-class GridDashboard extends StatelessWidget {
+class GridDashboard extends StatefulWidget {
+  final int relationShipId;
+  const GridDashboard({Key? key, required this.relationShipId}) : super(key: key);
+
+  @override
+  State<GridDashboard> createState() => _GridDashboardState();
+}
+
+class _GridDashboardState extends State<GridDashboard> {
   Items item1 = new Items(
       title: "Actionable List",
       subtitle: "Actionable List find here",
@@ -32,6 +40,7 @@ class GridDashboard extends StatelessWidget {
   );
 
 
+
   @override
   Widget build(BuildContext context) {
     List<Items> myList = [item1, item2, item3, item4];
@@ -56,19 +65,19 @@ class GridDashboard extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OnGoingMeetList(),
+                      builder: (context) => OnGoingMeetList(relationShipId: widget.relationShipId,),
                     ));
               }else if(data.title.compareTo("Schedule Meeting")==0){
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ScheduleMeetList(),
+                      builder: (context) => ScheduleMeetList(relationShipId: widget.relationShipId,),
                     ));
               }else if(data.title.compareTo("Complete Meeting")==0){
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ComplteteMeetList(),
+                      builder: (context) => ComplteteMeetList(relationShipId: widget.relationShipId,),
                     ));
               }
             },
@@ -149,3 +158,6 @@ class Items {
   String img;
   Items({required this.title, required this.subtitle, required this.event, required this.img});
 }
+
+
+

@@ -70,7 +70,7 @@ class _UserProfileState extends State<UserProfile> {
 
                       padding: EdgeInsets.all(5),
                       clipBehavior: Clip.antiAlias,
-                      child:  Image.network('${user.branchLogo.replaceAll("../", "http://stonemen.bsninfotech.org/")}'),
+                      child:  setImage(user.branchLogo),
                       width: 70.0,
                       height: 70.0,
                       decoration: BoxDecoration(
@@ -252,4 +252,14 @@ class _UserProfileState extends State<UserProfile> {
           ),
         ));
   }
+
+
+    setImage(String url) {
+      if(url!=null){
+        return Image.network('${url.replaceAll("../", "http://stonemen.bsninfotech.org/")}');
+
+      }else{
+        return  null;
+      }
+    }
 }

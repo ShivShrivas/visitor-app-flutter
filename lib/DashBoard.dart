@@ -29,12 +29,17 @@ class _DashboardState extends State<Dashboard> {
    late List<MeetingWithResponse> meetingWithResponseList;
    late List<String> meetingWithPerson;
    late final List<String> purposes;
-
+   final _formKey = GlobalKey<FormState>();
     String selectedPurpose="";
     String selectedPerson="";
 
 TextEditingController timeController=TextEditingController();
 TextEditingController dateController=TextEditingController();
+TextEditingController nameController=TextEditingController();
+TextEditingController emailController=TextEditingController();
+TextEditingController mobileController=TextEditingController();
+
+
 
 
    Future<void> getMeetingWithResponse() async {
@@ -68,6 +73,44 @@ TextEditingController dateController=TextEditingController();
      });
      print(meetingWithPerson[0]);
    }
+
+  Future<void> scheduleAmeeting(String name, String email, String mobile, String time, String date) async {
+
+    Map<String, dynamic> body = {
+    "TransID":"","MeetingDate":date,"PVNo":"000005","MobileNo":mobile,
+    "EmailId":email,"VisitorName":name,"PurposeId":"2",
+    "AuthorizedOrOtherPersonCode":"00000002","StatusId":1,
+    "RelationshipId": widget.loginResponse.relationshipId,"SessionId":"1","FYId":"1",
+    "CreatedBy":"400","UpdatedBy":"400","Action":"1"
+    };
+    String jsonBody = json.encode(body);
+    final encoding = Encoding.getByName('utf-8');
+    final url = Uri.parse(
+        'http://stonemen.bsninfotech.org/Api/VisitorTransactionApi/InsertUpdateDeleteAppointment');
+    final headers = {'Content-Type': 'application/json'};
+    var response = (await http.post(
+    url,
+    headers: headers,
+    body: jsonBody,
+        encoding: encoding,
+    ));
+    print(response.body);
+
+    if(identical(response.body,"1")){
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Meeting Schedule Successfully')),
+
+      );
+
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Something went wrong')),
+      );
+
+    }
+
+
+  }
 
   Future<void> getPurposeResponse() async {
     Map<String, dynamic> body = {
@@ -155,12 +198,11 @@ TextEditingController dateController=TextEditingController();
                                         child: Container(
                                           padding: EdgeInsets.all(5),
                                           clipBehavior: Clip.antiAlias,
-                                          child:  Image.network('${widget.loginResponse.branchLogo.replaceAll("../", "http://stonemen.bsninfotech.org/")}'),
                                           width: 70.0,
                                           height: 70.0,
                                           decoration: BoxDecoration(
                                               color: Colors.white,
-                                           
+
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(75.0)),
                                               boxShadow: [
@@ -168,6 +210,7 @@ TextEditingController dateController=TextEditingController();
                                                     blurRadius: 2.0,
                                                     color: Colors.black)
                                               ]),
+                                          child:  setImage(widget.loginResponse.branchLogo),
                                         ),
                                       ),
                                     ),
@@ -238,7 +281,7 @@ TextEditingController dateController=TextEditingController();
               )),
 
           //TODO Grid Dashboard
-          GridDashboard()
+          GridDashboard(relationShipId:widget.loginResponse.relationshipId)
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -248,7 +291,7 @@ TextEditingController dateController=TextEditingController();
         ),
         backgroundColor: Colors.indigoAccent,
         onPressed: () {
-
+          BuildContext dialogContext;
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -259,21 +302,46 @@ TextEditingController dateController=TextEditingController();
                     return Padding(
                       padding: const EdgeInsets.all(0.0),
                       child: Form(
+                        key: _formKey,
                         child: Column(
                           children: <Widget>[
                             TextFormField(
+                              controller: nameController,
+                              validator: (value){
+                                if(value==null || value.isEmpty){
+                                  return "Please Enter Name";
+                                }else{
+                                  return null;
+                                }
+                              },
                               decoration: InputDecoration(
                                 labelText: 'Name',
                                 icon: Icon(Icons.account_box),
                               ),
                             ),
                             TextFormField(
+                              controller: emailController,
+                              validator: (value){
+                                if(value==null || value.isEmpty){
+                                  return "Please Enter Email";
+                                }else{
+                                  return null;
+                                }
+                              },
                               decoration: InputDecoration(
                                 labelText: 'Email',
                                 icon: Icon(Icons.email),
                               ),
                             ),
                             TextFormField(
+                              controller: mobileController,
+                              validator: (value){
+                                if(value==null || value.isEmpty){
+                                  return "Please Enter Mobile Number";
+                                }else{
+                                  return null;
+                                }
+                              },
                               decoration: InputDecoration(
                                 labelText: 'Mobile',
                                 icon: Icon(Icons.call),
@@ -378,7 +446,13 @@ TextEditingController dateController=TextEditingController();
                             ),
                             TextFormField(
                               controller: timeController,
-
+                              validator: (value){
+                                if(value==null || value.isEmpty){
+                                  return "Please Enter Time";
+                                }else{
+                                  return null;
+                                }
+                              },
                               onTap: () async {
                                 print("done");
                                 TimeOfDay? time = await getTime(
@@ -399,6 +473,13 @@ TextEditingController dateController=TextEditingController();
 
                             ),
                             TextFormField(
+                              validator: (value){
+                                if(value==null || value.isEmpty){
+                                  return "Please Enter Date";
+                                }else{
+                                  return null;
+                                }
+                              },
                               controller: dateController,
                               onTap: () async{
                                 DateTime? date = DateTime(1900);
@@ -439,7 +520,17 @@ TextEditingController dateController=TextEditingController();
                               color: Colors.indigo
                             ),),
                             onPressed: () {
-                              // your code
+                              if (_formKey.currentState!.validate()) {
+                                // If the form is valid, display a snackbar. In the real world,
+                                // you'd often call a server or save the information in a database.
+                                scheduleAmeeting(nameController.value.text,emailController.value.text,mobileController.value.text,timeController.value.text,dateController.value.text);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Processing Data')),
+                                );
+
+                              }
+
+
                             }),
                       ],
                     )
@@ -475,5 +566,14 @@ TextEditingController dateController=TextEditingController();
     );
 
     return time;
+  }
+
+  setImage(String url) {
+    if(url!=null){
+      return Image.network('${url.replaceAll("../", "http://stonemen.bsninfotech.org/")}');
+
+    }else{
+       return  null;
+     }
   }
 }

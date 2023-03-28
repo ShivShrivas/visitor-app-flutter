@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -26,6 +27,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late bool _loading=false;
+  late double _progressValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _loading = false;
+    _progressValue = 0.0;
+  }
   TextEditingController userIdController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   int _counter = 0;
@@ -64,6 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
          content: Text("User Id or Password Incorrect"),
        ));
+       setState(() {
+         _loading=false;
+       });
      }
    }else{
      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -216,9 +229,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       SizedBox(height: 40,),
-                      GestureDetector(
-                        onTap: (){
-                          logIn(userIdController.text.toString(),passwordController.text.toString());
+                      !_loading? GestureDetector(
+                        onTap: () async {
+                            setState((){
+                            _loading=true;
+                            });
+                            await logIn(userIdController.text.toString(),passwordController.text.toString());
+                            setState((){
+                            _loading=false;
+                            });
+
                         },
                         child:  Container(
                           height: 50,
@@ -235,7 +255,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontFamily: 'RaleWay',),),
                           ),
                         ),
-                      ),
+                      ):Center(child:CircularProgressIndicator()),
 
                       SizedBox(height: 70,),
                       Text("Forgot Password?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),),
@@ -247,5 +267,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         )
     );
+  }
+
+  void _updateProgress() {
+
+
+
   }
 }
