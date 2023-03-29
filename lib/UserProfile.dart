@@ -15,7 +15,7 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-    LoginResponse user=LoginResponse(userId: 0, userName: "", userTypeId: 0, loginAs: "", lastLogin: "", activeAcademicYearId: 0, activeAcademicYear: "", activeFinancialYearId: 0, activeFinancialYear: "", displayCode: "", relationshipId: 0, isHO: 0, isSchool: 0, isCollege: false, isSociety: false, branchLogo: "", groupCode: "", societyCode: "", schoolCode: "", branchCode: "", schoolName: "", schoolAddress: "", societyName: "", schoolLiveWebSiteUrl: "", schoolContactNo: "", schoolEmailId: "", bankFeePayMode: "", chqInfavourof: "", profilePic: "", mobileNo: "", emailId: "", code: "", departmentCode: "", designationCode: "", designation: "", affiliationNo: "", affiliationDate: 0, schoolStatus: "", schoolNo: "", srNo: "", state: 0, response: "");
+    LoginResponse user=LoginResponse(0, "",  0,  "",  "",  0, "", 0,  "",  "",  0,  0,  0,  false,  false,  "",  "",  "",  "",  "", "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  0,  "",  "",  "",  0,  "");
   @override
    getDataFromSP() async {
     SharedPreferences pref = await SharedPreferences.getInstance();

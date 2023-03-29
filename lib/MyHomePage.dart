@@ -62,8 +62,9 @@ class _MyHomePageState extends State<MyHomePage> {
     ));
    if(response!=null){
      final List<dynamic> parsed = json.decode(response.body);
-     final loginResponse = LoginResponse.fromJson(parsed[0]);
 
+     final loginResponse = LoginResponse.fromJson(parsed[0]);
+     print(loginResponse);
      if(loginResponse.userName!=null){
        SharedPreferences pref = await SharedPreferences.getInstance();
 

@@ -75,11 +75,11 @@ TextEditingController mobileController=TextEditingController();
    }
 
   Future<void> scheduleAmeeting(String name, String email, String mobile, String time, String date, BuildContext dialogContext) async {
-
+print(date+"T"+time.split(" ")[0]+":00");
     Map<String, dynamic> body = {
-    "TransID":"","MeetingDate":date,"PVNo":"000005","MobileNo":mobile,
-    "EmailId":email,"VisitorName":name,"PurposeId":"2",
-    "AuthorizedOrOtherPersonCode":"00000002","StatusId":1,
+    "TransID":"","MeetingDate":date+"T"+time.split(" ")[0]+":00","PVNo":"000005","MobileNo":mobile,
+    "EmailId":email,"VisitorName":name,"PurposeId":selectedPurpose,
+    "AuthorizedOrOtherPersonCode":selectedPerson,"StatusId":1,
     "RelationshipId": widget.loginResponse.relationshipId,"SessionId":"1","FYId":"1",
     "CreatedBy":"400","UpdatedBy":"400","Action":"1"
     };
@@ -376,7 +376,7 @@ TextEditingController mobileController=TextEditingController();
                                       ...meetingWithResponseList.map<DropdownMenuItem<String>>((data){
                                         return DropdownMenuItem(
                                           child:Text(data.name!,style: TextStyle(fontSize: 14) ),
-                                          value: data.name!,
+                                          value: data.code!,
                                         );
 
                                       }).toList(),
@@ -424,7 +424,7 @@ TextEditingController mobileController=TextEditingController();
                                       ...currencies.map<DropdownMenuItem<String>>((data){
                                         return DropdownMenuItem(
                                           child:Text(data.purposeName! ,style: TextStyle(fontSize: 14)),
-                                          value: data.purposeName!,
+                                          value: data.code.toString(),
                                         );
 
                                       }).toList(),
@@ -578,7 +578,12 @@ TextEditingController mobileController=TextEditingController();
 
   setImage(String url) {
     if(url!=null){
-      return Image.network('${url.replaceAll("../", "http://stonemen.bsninfotech.org/")}');
+      if(url!=""){
+        return Image.network('${url.replaceAll("../", "http://stonemen.bsninfotech.org/")}');
+
+      }else{
+        return null;
+      }
 
     }else{
        return  null;
