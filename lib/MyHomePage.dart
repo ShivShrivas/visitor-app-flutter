@@ -116,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 Container(
                   width: double.maxFinite,
-                  height: 350,
+                  height: 400,
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           image: AssetImage('assets/images/background.png'),
@@ -129,14 +129,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         width: 200,
                         height: 200,
                         child:
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 100,),
-                            Text("Welcome",style: TextStyle(color:Colors.white70,fontSize: 26,fontWeight: FontWeight.w300),),
-                            Text("to",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w300,color: Colors.white60),),
-                            Text("Visitor App",style: TextStyle(fontSize: 35,fontWeight: FontWeight.w500,color: Colors.white),),
-                          ],
+                        SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 100,),
+                              Text("Welcome",style: TextStyle(color:Colors.white70,fontSize: 26,fontWeight: FontWeight.w300),),
+                              Text("to",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w300,color: Colors.white60),),
+                              Text("Visitor App",style: TextStyle(fontSize: 35,fontWeight: FontWeight.w500,color: Colors.white),),
+                            ],
+                          ),
                         ),
                       ),
 
