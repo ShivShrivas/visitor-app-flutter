@@ -12,6 +12,10 @@ class ActionableDetailsPage extends StatefulWidget {
 }
 
 class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
+  final _formKeyRemark = GlobalKey<FormState>();
+
+  TextEditingController remarkController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
@@ -24,7 +28,7 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
       ),
       body: SingleChildScrollView(
         child: new Container(
-          height: _height,
+          height: _height-60,
           child: new Stack(
             children: <Widget>[
               new Container(
@@ -88,6 +92,7 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
                             left: _width / 20,
                             right: _width / 20),
                         child: new Column(
+
                           children: <Widget>[
                             new Container(
                               decoration: new BoxDecoration(
@@ -108,153 +113,395 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
                                     ]),
                               ),
                             ),
-                            new Padding(
-                              padding: new EdgeInsets.only(top: _height / 20),
-                              child: new Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      SizedBox(height: 30,),
+                      Container(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
-                                  infoChild(
-                                      _width, Icons.person, widget.listResponse.name),
-                                  infoChild(_width, Icons.note, widget.listResponse.purposeName),
-                                  infoChild(
-                                      _width, Icons.connect_without_contact, widget.listResponse.belongingName),
-                                  infoChild(_width, Icons.chat_bubble,
-                                      widget.listResponse.remark),
 
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      new Padding(
-                                        padding: new EdgeInsets.only(top: _height / 30),
-                                        child: GestureDetector(
-                                          onTap: (){
 
-                                            setStatus("Reject",3);
-                                          },
-                                          child: new Container(
-                                            width: _width / 2.5,
-                                            height: _height / 20,
-                                            decoration: new BoxDecoration(
-                                                color: const Color(0xFFFF0A31),
-                                                borderRadius: new BorderRadius.all(
-                                                    new Radius.circular(_height / 60)),
-                                                boxShadow: [
-                                                  new BoxShadow(
-                                                      color: Colors.black87,
-                                                      blurRadius: 2.0,
-                                                      offset: new Offset(0.0, 1.0))
-                                                ]),
-                                            child: new Center(
-                                              child: new Text('REJECT',
-                                                  style: new TextStyle(
-                                                      fontSize: 12.0,
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold)),
+                                    RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          WidgetSpan(
+                                            child: Padding(
+                                              padding:
+                                              const EdgeInsets.symmetric(horizontal: 2.0),
+                                              child: Icon(
+                                                Icons.meeting_room,
+                                                size: 15,
+                                                color: Colors.grey,
+                                              ),
                                             ),
                                           ),
+                                          TextSpan(
+                                              text: "Meeting with",
+                                              style:
+                                              TextStyle(fontSize: 15, color: Colors.grey)),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 4),
+                                      child: Text(
+                                        widget.listResponse.name,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      new Padding(
-                                        padding: new EdgeInsets.only(top: _height / 30),
-                                        child: GestureDetector(
-                                          onTap: (){
-                                            setStatus("Allow",6);
-                                          },
-                                          child: new Container(
-                                            width: _width / 2.5,
-                                            height: _height / 20,
-                                            decoration: new BoxDecoration(
-                                                color: const Color(0xFF01BE09),
-                                                borderRadius: new BorderRadius.all(
-                                                    new Radius.circular(_height / 60)),
-                                                boxShadow: [
-                                                  new BoxShadow(
-                                                      color: Colors.black87,
-                                                      blurRadius: 2.0,
-                                                      offset: new Offset(0.0, 1.0))
-                                                ]),
-                                            child: new Center(
-                                              child: new Text('ALLOW',
-                                                  style: new TextStyle(
-                                                      fontSize: 12.0,
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold)),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                    ),
+                                  ],),
+                                  SizedBox(
+                                    height: 10,
                                   ),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      new Padding(
-                                        padding: new EdgeInsets.only(top: _height / 30),
-                                        child: GestureDetector(
-                                          onTap: (){
-                                            setStatus("WALK IN",4);
-                                          },
-                                          child: new Container(
-                                            width: _width / 2.5,
-                                            height: _height / 20,
-                                            decoration: new BoxDecoration(
-                                                color: const Color(0xFF3058F8),
-                                                borderRadius: new BorderRadius.all(
-                                                    new Radius.circular(_height / 60)),
-                                                boxShadow: [
-                                                  new BoxShadow(
-                                                      color: Colors.black87,
-                                                      blurRadius: 2.0,
-                                                      offset: new Offset(0.0, 1.0))
-                                                ]),
-                                            child: new Center(
-                                              child: new Text('WALK IN',
-                                                  style: new TextStyle(
-                                                      fontSize: 12.0,
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold)),
+
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            WidgetSpan(
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets.symmetric(horizontal: 2.0),
+                                                child: Icon(
+                                                  Icons.timelapse,
+                                                  size: 15,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
                                             ),
+                                            TextSpan(
+                                                text: "Meeting on",
+                                                style:
+                                                TextStyle(fontSize: 15, color: Colors.grey)),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 4),
+                                        child: Text(
+                                          "Date: " +
+                                              widget.listResponse.meetingDate
+                                                  .toString()
+                                                  .replaceFirst("T", " Time: "),
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
                                       ),
-                                      new Padding(
-                                        padding: new EdgeInsets.only(top: _height / 30),
-                                        child: GestureDetector(
-                                          onTap: (){
-                                            setStatus("ON WAIT",5);
-                                          },
-                                          child: new Container(
-                                            width: _width / 2.5,
-                                            height: _height / 20,
-                                            decoration: new
-                                            BoxDecoration(
-                                                color: const Color(0xFFFFE70E),
-                                                borderRadius: new BorderRadius.all(
-                                                    new Radius.circular(_height / 60)),
-                                                boxShadow: [
-                                                  new BoxShadow(
-                                                      color: Colors.black87,
-                                                      blurRadius: 2.0,
-                                                      offset: new Offset(0.0, 1.0))
-                                                ]),
-                                            child: new Center(
-                                              child: new Text('ON WAIT',
-                                                  style: new TextStyle(
-                                                      fontSize: 12.0,
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.bold)),
+                                    ],),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            WidgetSpan(
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets.symmetric(horizontal: 2.0),
+                                                child: Icon(
+                                                  Icons.note_alt_rounded,
+                                                  size: 15,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
                                             ),
+                                            TextSpan(
+                                                text: "Meeting Purpose",
+                                                style:
+                                                TextStyle(fontSize: 15, color: Colors.grey)),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 4),
+                                        child: Text(
+                                          widget.listResponse.purposeName,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
                                       ),
-                                    ],
+                                    ],),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+
+                                    RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          WidgetSpan(
+                                            child: Padding(
+                                              padding:
+                                              const EdgeInsets.symmetric(horizontal: 2.0),
+                                              child: Icon(
+                                                Icons.credit_card,
+                                                size: 15,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ),
+                                          TextSpan(
+                                              text: "Physical Visitor Pass Name",
+                                              style:
+                                              TextStyle(fontSize: 15, color: Colors.grey)),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 4),
+                                      child: Text(
+                                        widget.listResponse.physicalVisitorPassName,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            WidgetSpan(
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets.symmetric(horizontal: 2.0),
+                                                child: Icon(
+                                                  Icons.add_card_sharp,
+                                                  size: 15,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ),
+                                            TextSpan(
+                                                text: "Goverment Name",
+                                                style:
+                                                TextStyle(fontSize: 15, color: Colors.grey)),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 4),
+                                        child: Text(
+
+                                              widget.listResponse.govermentName
+                                                  ,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            WidgetSpan(
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets.symmetric(horizontal: 2.0),
+                                                child: Icon(
+                                                  Icons.note_alt_rounded,
+                                                  size: 15,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ),
+                                            TextSpan(
+                                                text: "BelongingCode",
+                                                style:
+                                                TextStyle(fontSize: 15, color: Colors.grey)),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 4),
+                                        child: Text(
+                                          widget.listResponse.belongingCode,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],),
+                                  SizedBox(
+                                    height: 10,
                                   ),
                                 ],
                               ),
-                            )
+                            ),
+                            SizedBox(height: _height/15,),
+
+                     Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  new Padding(
+                                    padding: new EdgeInsets.only(top: 0),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        openDialogForRemarks("Reject",3);
+                                      },
+                                      child: new Container(
+                                        width: _width / 5,
+                                        height: _height / 20,
+                                        decoration: new BoxDecoration(
+                                            color: const Color(0xFFFF0A31),
+                                            borderRadius: new BorderRadius.all(
+                                                new Radius.circular(_height / 90)),
+                                            boxShadow: [
+                                              new BoxShadow(
+                                                  color: Colors.red.shade100,
+                                                  blurRadius: 2.0,
+                                                  offset: new Offset(3, 3.0))
+                                            ]),
+                                        child: new Center(
+                                          child: new Text('REJECT',
+                                              style: new TextStyle(
+                                                  fontSize: 12.0,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  new Padding(
+                                    padding: new EdgeInsets.only(top: 0),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        openDialogForRemarks("Allow",6);
+
+                                      },
+                                      child: new Container(
+                                        width: _width / 5,
+                                        height: _height / 20,
+                                        decoration: new BoxDecoration(
+                                            color: const Color(0xFF01BE09),
+                                            borderRadius: new BorderRadius.all(
+                                                new Radius.circular(_height / 90)),
+                                            boxShadow: [
+                                              new BoxShadow(
+                                                  color: Colors.green.shade100,
+                                                  blurRadius: 2.0,
+                                                  offset: new Offset(3, 3.0))
+                                            ]),
+                                        child: new Center(
+                                          child: new Text('ALLOW',
+                                              style: new TextStyle(
+                                                  fontSize: 12.0,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  new Padding(
+                                    padding: new EdgeInsets.only(top: 0),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        openDialogForRemarks("WALK IN",4);
+
+                                      },
+                                      child: new Container(
+                                        width: _width / 5,
+                                        height: _height / 20,
+                                        decoration: new BoxDecoration(
+                                            color: const Color(0xFF3058F8),
+                                            borderRadius: new BorderRadius.all(
+                                                new Radius.circular(_height / 90)),
+                                            boxShadow: [
+                                              new BoxShadow(
+                                                  color: Colors.blueAccent.shade100,
+                                                  blurRadius: 2.0,
+                                                  offset: new Offset(3, 3.0))
+                                            ]),
+                                        child: new Center(
+                                          child: new Text('WALK IN',
+                                              style: new TextStyle(
+                                                  fontSize: 12.0,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  new Padding(
+                                    padding: new EdgeInsets.only(top: 0),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        openDialogForRemarks("ON WAIT",5);
+                                      },
+                                      child: new Container(
+                                        width: _width / 5,
+                                        height: _height / 20,
+                                        decoration: new
+                                        BoxDecoration(
+                                            color: const Color(0xFFFFE70E),
+                                            borderRadius: new BorderRadius.all(
+                                                new Radius.circular(_height / 90)),
+                                            boxShadow: [
+                                              new BoxShadow(
+                                                  color: Colors.yellow.shade100,
+                                                  blurRadius: 2.0,
+                                                  offset: new Offset(3, 3.0))
+                                            ]),
+                                        child: new Center(
+                                          child: new Text('ON WAIT',
+                                              style: new TextStyle(
+                                                  fontSize: 12.0,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
                           ],
                         ),
-                      )
+                      ),
+
+
                     ],
                   ),
                 ),
@@ -289,17 +536,17 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
       child: new Row(
         children: <Widget>[
           new SizedBox(
-            width: width / 10,
+            width: width / 20,
           ),
           new Icon(
             icon,
             color: const Color(0xFF8C88FF),
-            size: 25.0,
+            size: 20.0,
           ),
           new SizedBox(
             width: width / 20,
           ),
-          new Text(data)
+          new Text(data,style: TextStyle(fontSize: 16),)
         ],
       ),
       onTap: () {
@@ -308,10 +555,10 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
     ),
   );
 
-  Future<void> setStatus(String s, int i) async {
+  Future<void> setStatus(String s, int i, String remark,BuildContext dialogContext) async {
 
     Map<String, dynamic> body =
-    {"Action":1,"RelationshipId":8,"FYId":1, "VTransId":widget.listResponse.transId,"SessionId":1, "Status":s, "Remarks":"It will be dynamic", "isAction":i};
+    {"Action":1,"RelationshipId":8,"FYId":1, "VTransId":widget.listResponse.transId,"SessionId":1, "Status":s, "Remarks":remark, "isAction":i};
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
     final url = Uri.parse(
@@ -323,10 +570,95 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
     body: jsonBody,
         encoding: encoding,
     ));
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('In Response you got ${response.body}. Your status is ${s} and status id is ${i}'),
-    ));
+
+    if(response.body=='"1"'){
+      ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(content: Text('In Response you got ${response.body}. Your status is ${s} and status id is ${i}')),
+
+      );
+      setState(() {
+        Navigator.pop(dialogContext);
+        remarkController.clear();
 
 
+      });
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Something went wrong')),
+      );
+      Navigator.pop(dialogContext);
+
+    }
+
+  }
+
+  Future openDialogForRemarks(String s, int i) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return AlertDialog(
+            scrollable: true,
+            title: Text('Enter A Remark',style: TextStyle(fontSize: 17),),
+            content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+              return Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: Form(
+                  key: _formKeyRemark,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+
+                        controller: remarkController,
+                        validator: (value){
+                          if(value==null || value.isEmpty){
+                            return "Please Enter Remark";
+                          }else{
+                            return null;
+                          }
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Remarks',
+                          icon: Icon(Icons.note_alt),
+                        ),
+                      ),
+
+                    ],
+                  ),
+                ),
+              );
+            }),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MaterialButton(
+                      child: Text("Cancel"),
+                      onPressed: () {
+                        // your code
+                      }),
+
+                  MaterialButton(
+                      child: Text("Save", style: TextStyle(
+                          color: Colors.indigo
+                      ),),
+                      onPressed: () {
+                        if (_formKeyRemark.currentState!.validate()) {
+                          // If the form is valid, display a snackbar. In the real world,
+                          // you'd often call a server or save the information in a database.
+                          setStatus(s, i,remarkController.text,dialogContext);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Processing Data')),
+                          );
+
+                        }
+
+
+                      }),
+                ],
+              )
+
+            ],
+          );
+        });
   }
 }
