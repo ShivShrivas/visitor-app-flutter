@@ -1,143 +1,411 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:visitor_app_flutter/ActionableDetailsPage.dart';
+import 'package:visitor_app_flutter/models/ActionableListResponse.dart';
 
 class ActionableList extends StatefulWidget {
-  const ActionableList({Key? key}) : super(key: key);
+  final int relationShipId;
+  const ActionableList({Key? key, required this.relationShipId}) : super(key: key);
 
   @override
   State<ActionableList> createState() => _ActionableListState();
 }
 
+
 class _ActionableListState extends State<ActionableList> {
+
+  late String fromDateGlobal;
+  late String toDateGlobal;
+  bool _isLoading = true;
+  late List<ActionableListResponse> listSchduleMeeting;
+  DateTime selectedDate = DateTime.now();
+  TextEditingController _FromDate = new TextEditingController();
+  TextEditingController _ToDate = new TextEditingController();
+
+  Future<Null> _selectFromDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(1901, 1),
+        lastDate:DateTime.now());
+    if (picked != null && picked != selectedDate)
+      setState(() {
+
+        selectedDate = picked;
+        _FromDate.value = TextEditingValue(text:  "${picked?.toLocal()}".split(' ')[0]);
+        fromDateGlobal=_FromDate.text.toString();
+        getScheduleMeetingList(fromDateGlobal, toDateGlobal);
+        _isLoading=true;
+      });
+  }
+
+  Future<Null> _selectToDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(1901, 1),
+        lastDate: DateTime.now());
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+
+        _ToDate.value = TextEditingValue(text: "${picked?.toLocal()}".split(' ')[0]);
+        toDateGlobal=_ToDate.text.toString();
+
+        getScheduleMeetingList(fromDateGlobal, toDateGlobal);
+        _isLoading=true;
+
+      });
+  }
+
+  void getDates() {
+    var fromDate = new DateTime.now().subtract(Duration(days: 30));
+    var toDate = new DateTime.now();
+    var formatter = new DateFormat('yyyy-MM-dd');
+
+    setState(() {
+      fromDateGlobal = formatter.format(fromDate).toString();
+      toDateGlobal = formatter.format(toDate).toString();
+
+    });
+  }
+
+// 2016-01-25
+  Future<void> getScheduleMeetingList(String fromDate, String toDate) async {
+    print("from date " + fromDate);
+    print("to date: " + toDate);
+
+    Map<String, dynamic> body =
+    {"Action":15,"FYId":1,"FromDate":fromDate,"UserId":400,"PurposeId":"","ToDate":toDate,"SessionId":1,
+      "RelationshipId": widget.relationShipId.toString()
+    };
+    String jsonBody = json.encode(body);
+    final encoding = Encoding.getByName('utf-8');
+    final url = Uri.parse(
+        'http://stonemen.bsninfotech.org/Api/VisitorTransactionApi/GetVisitorList');
+    final headers = {'Content-Type': 'application/json'};
+    var response = (await http.post(
+      url,
+      headers: headers,
+      body: jsonBody,
+      encoding: encoding,
+    ));
+    print(response);
+    final List<dynamic> parsed = json.decode(response.body);
+    print(response.body);
+
+    setState(() {
+      listSchduleMeeting = (json.decode(response.body) as List)
+          .map((e) => ActionableListResponse.fromJson(e))
+          .toList();
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    setState(() {
+      getDates();
+      getScheduleMeetingList(fromDateGlobal, toDateGlobal);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.indigo,
-          title: const Text('Actionable List'),
-        ),
-        body: Center(
-          child: ListView.builder(
-            itemCount: 10,
-            itemBuilder: (context, i){
-
-              return visitorItemCard();
-
-            },
-          ),
-        )
-    );
-  }
-  Widget visitorItemCard() {
-    return Card(
-      color: Color.fromRGBO(255, 224, 213, 1.0),
-      margin: EdgeInsets.all(5),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5), // if you need this
-        side: BorderSide(
-          color: Colors.grey.withOpacity(.2),
-          width: 1,
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.indigo,
+        title: const Text('Actionable List'),
       ),
-      child: Container(
-
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.fromLTRB(8.0, 13.0, 8.0, 0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 4.0, 0, 0),
-                        child: Text(
-                          'Mohit Kumar Gupta',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => _selectFromDate(context),
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          controller: _FromDate,
+                          keyboardType: TextInputType.datetime,
+                          decoration: InputDecoration(
+                            hintText: fromDateGlobal,
+                            prefixIcon: Icon(
+                              Icons.calendar_month,
+                              color: Colors.indigo,
+                            ),
                           ),
                         ),
                       ),
-                      Text(
-                        'Alpha 1, Greater Noida',
-                        style: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => _selectToDate(context),
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          controller: _ToDate,
+                          keyboardType: TextInputType.datetime,
+                          decoration: InputDecoration(
+                            hintText: toDateGlobal,
+                            prefixIcon: Icon(
+                              Icons.calendar_month,
+                              color: Colors.indigo,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ]),
+          ),
+          Expanded(
+            child: !_isLoading
+                ? Center(
+              child: ListView.builder(
+                itemCount: listSchduleMeeting.length,
+                itemBuilder: (context, index) {
+                  return visitorItemCard(context, index);
+                },
+              ),
+            )
+                : Center(
+              child: SizedBox(
+                height: 40,
+                width: 40,
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget visitorItemCard(BuildContext context, int index) {
+    return GestureDetector(
+      onTap: (){
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ActionableDetailsPage(listResponse: listSchduleMeeting[index]),
+            ));
+      },
+      child: Card(
+        elevation: 4,
+        color: Color.fromRGBO(224, 255, 201, 1.0),
+        margin: EdgeInsets.all(5),
+        shadowColor: Color.fromRGBO(241, 255, 230, 1.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8), // if you need this
+        ),
+
+
+          child: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 2.0, 0, 0),
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    WidgetSpan(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 1.0),
+                                        child: Icon(
+                                          Icons.person,
+                                          size: 20,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                    TextSpan(
+                                        text: listSchduleMeeting[index]
+                                            .visitorName
+                                            .toString(),
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.indigo,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                              )),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                WidgetSpan(
+                                  child: Padding(
+                                    padding:
+                                    const EdgeInsets.symmetric(horizontal: 2.0),
+                                    child: Icon(
+                                      Icons.mail,
+                                      size: 15,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                                TextSpan(
+                                    text: listSchduleMeeting[index]
+                                        .emailId
+                                        .toString(),
+                                    style: TextStyle(
+                                        fontSize: 15, color: Colors.indigo)),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            Divider(
-              color: Colors.black,
-              thickness: .2,
-              indent: 8,
-              endIndent: 8,
-            ),
-            Container(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Meeting with',
-                      style: TextStyle(color: Colors.grey[700]),
-                    ),
-                    Text(
-                      'Gaurav Nigam',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Meeting On',
-                      style: TextStyle(color: Colors.grey[700]),
-                    ),
-                    Text(
-                      '28 Feb 2020 at 1:36 PM',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Meet Purpose',
-                      style: TextStyle(color: Colors.grey[700]),
-                    ),
-                    Text(
-                      'General Meeting',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                  ],
                 ),
-              ),
+                Divider(
+                  color: Colors.black,
+                  thickness: .2,
+                  indent: 8,
+                  endIndent: 8,
+                ),
+                Container(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              WidgetSpan(
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(horizontal: 2.0),
+                                  child: Icon(
+                                    Icons.meeting_room,
+                                    size: 15,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                              TextSpan(
+                                  text: "Meeting with",
+                                  style:
+                                  TextStyle(fontSize: 15, color: Colors.grey)),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4),
+                          child: Text(
+                            listSchduleMeeting[index].authPersionName.toString(),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              WidgetSpan(
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(horizontal: 2.0),
+                                  child: Icon(
+                                    Icons.timelapse,
+                                    size: 15,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                              TextSpan(
+                                  text: "Meeting on",
+                                  style:
+                                  TextStyle(fontSize: 15, color: Colors.grey)),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4),
+                          child: Text(
+                            "Date: " +
+                                listSchduleMeeting[index]
+                                    .meetingDate
+                                    .toString()
+                                    .replaceFirst("T", " Time: "),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              WidgetSpan(
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(horizontal: 2.0),
+                                  child: Icon(
+                                    Icons.note_alt_rounded,
+                                    size: 15,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                              TextSpan(
+                                  text: "Meeting Purpose",
+                                  style:
+                                  TextStyle(fontSize: 15, color: Colors.grey)),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4),
+                          child: Text(
+                            listSchduleMeeting[index].purposeName.toString(),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+
       ),
     );
   }

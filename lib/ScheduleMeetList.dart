@@ -57,8 +57,8 @@ class _ScheduleMeetListState extends State<ScheduleMeetList> {
   }
 
   void getDates() {
-    var toDate = new DateTime.now().subtract(Duration(days: 1));
-    var fromDate = new DateTime.now();
+    var fromDate  = new DateTime.now().subtract(Duration(days: 1));
+    var  toDate   = new DateTime.now();
     var formatter = new DateFormat('yyyy-MM-dd');
 
     setState(() {
@@ -137,7 +137,7 @@ class _ScheduleMeetListState extends State<ScheduleMeetList> {
                           controller: _FromDate,
                           keyboardType: TextInputType.datetime,
                           decoration: InputDecoration(
-                            hintText: 'From Date',
+                            hintText: fromDateGlobal,
                             prefixIcon: Icon(
                               Icons.calendar_month,
                               color: Colors.indigo,
@@ -155,7 +155,7 @@ class _ScheduleMeetListState extends State<ScheduleMeetList> {
                           controller: _ToDate,
                           keyboardType: TextInputType.datetime,
                           decoration: InputDecoration(
-                            hintText: 'To Date',
+                            hintText: toDateGlobal,
                             prefixIcon: Icon(
                               Icons.calendar_month,
                               color: Colors.indigo,

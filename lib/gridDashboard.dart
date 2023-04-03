@@ -59,7 +59,7 @@ class _GridDashboardState extends State<GridDashboard> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ActionableList(),
+                      builder: (context) => ActionableList(relationShipId: widget.relationShipId,),
                     ));
               }else if(data.title.compareTo("Ongoing Meeting")==0){
                 Navigator.push(
