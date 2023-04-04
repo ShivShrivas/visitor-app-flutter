@@ -120,7 +120,7 @@ class _OnGoingMeetListState extends State<OnGoingMeetList> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.indigo,
-        title: const Text('Schedule Meeting'),
+        title: const Text('OnGoing Meeting'),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,

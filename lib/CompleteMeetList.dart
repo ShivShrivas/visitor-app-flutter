@@ -119,7 +119,7 @@ class _ComplteteMeetListState extends State<ComplteteMeetList> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.indigo,
-        title: const Text('Schedule Meeting'),
+        title: const Text('Complete Meeting'),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,

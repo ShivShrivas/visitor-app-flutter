@@ -514,15 +514,15 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
   }
 
   Widget headerChild(String header, String value) => new Expanded(
-      child: new Column(
+      child:  Column(
         children: <Widget>[
-          new Text(header),
-          new SizedBox(
+           Text(header),
+           SizedBox(
             height: 8.0,
           ),
-          new Text(
+           Text(
             '$value',
-            style: new TextStyle(
+            style:  TextStyle(
                 fontSize: 14.0,
                 color: const Color(0xFF8C88FF),
                 fontWeight: FontWeight.bold),
@@ -530,23 +530,23 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
         ],
       ));
 
-  Widget infoChild(double width, IconData icon, data) => new Padding(
-    padding: new EdgeInsets.only(bottom: 8.0),
-    child: new InkWell(
-      child: new Row(
+  Widget infoChild(double width, IconData icon, data) =>  Padding(
+    padding:  EdgeInsets.only(bottom: 8.0),
+    child:  InkWell(
+      child:  Row(
         children: <Widget>[
-          new SizedBox(
+           SizedBox(
             width: width / 20,
           ),
-          new Icon(
+           Icon(
             icon,
             color: const Color(0xFF8C88FF),
             size: 20.0,
           ),
-          new SizedBox(
+           SizedBox(
             width: width / 20,
           ),
-          new Text(data,style: TextStyle(fontSize: 16),)
+           Text(data,style: TextStyle(fontSize: 16),)
         ],
       ),
       onTap: () {
@@ -556,10 +556,11 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
   );
 
   Future<void> setStatus(String s, int i, String remark,BuildContext dialogContext) async {
-
+      print(widget.listResponse.transId);
     Map<String, dynamic> body =
-    {"Action":1,"RelationshipId":8,"FYId":1, "VTransId":widget.listResponse.transId,"SessionId":1, "Status":s, "Remarks":remark, "isAction":i};
+    {"Action":1,"RelationshipId":8,"FYId":1, "PTransId":widget.listResponse.transId,"SessionId":1, "Status":i, "Remarks":remark, "isAction":i,"TransId":""};
     String jsonBody = json.encode(body);
+    print(body);
     final encoding = Encoding.getByName('utf-8');
     final url = Uri.parse(
         'http://stonemen.bsninfotech.org/Api/VisitorTransactionApi/InsertVisitorNotificationGenerate');
