@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:visitor_app_flutter/MyHomePage.dart';
+import 'package:visitor_app_flutter/NotificationService.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key, required String title}) : super(key: key);
@@ -11,6 +13,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+  var GSMId;
+  NotificationService notificationService=NotificationService();
 
 
 
@@ -18,11 +22,24 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   void initState() {
     // TODO: implement initState
     super.initState();
+    notificationService.requestNotificationPermission();
+    notificationService.firebaseInit(context);
+    notificationService.setupInteractMessage(context);
+    notificationService.isTokenRefresh();
+    notificationService.getDeviceToken().then((value){
+      setState(() {
+        GSMId=value;
+      });
+      if (kDebugMode) {
+        print('device token');
+        print(value);
+      }
+    });
     Timer(Duration(milliseconds: 4000), () {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => MyHomePage(title: "Login Page"),
+            builder: (context) => MyHomePage(title: "Login Page", GSMID: GSMId,),
           ));
     });
   }

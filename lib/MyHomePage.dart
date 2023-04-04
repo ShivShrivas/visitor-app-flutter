@@ -9,7 +9,7 @@ import 'DashBoard.dart';
 import 'models/LoginResponse.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage( {super.key, required this.title,required this.GSMID});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -20,7 +20,7 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
+  final String title,GSMID;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -43,12 +43,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> logIn(String userId, String password) async {
     print(userId);
     print(password);
+    print(widget.GSMID);
+
     Map<String, dynamic> body = { 'UserName': userId,
       'Password': password,
       'LastLoginWith': 'W',
       'DisplayCode': 'RAMFAG',
       'GroupCode': '01',
-      'SocietyCode': '002'};
+      'SocietyCode': '002',
+      'GSMID':widget.GSMID
+       };
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
     final url = Uri.parse(

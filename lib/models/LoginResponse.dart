@@ -90,13 +90,13 @@ class LoginResponse {
 
 
   LoginResponse.fromJson(dynamic json) {
-    userId = json['UserId'];
-    userName = json['UserName'];
-    userTypeId = json['UserTypeId'];
-    loginAs = json['loginAs'];
-    lastLogin = json['LastLogin'];
-    activeAcademicYearId = json['ActiveAcademicYearId'];
-    activeAcademicYear = json['ActiveAcademicYear'];
+    userId = json['UserId']??"";
+    userName = json['UserName']??"";
+    userTypeId = json['UserTypeId']??"";
+    loginAs = json['loginAs']??"";
+    lastLogin = json['LastLogin']??"";
+    activeAcademicYearId = json['ActiveAcademicYearId']??"";
+    activeAcademicYear = json['ActiveAcademicYear']??'';
     activeFinancialYearId = json['ActiveFinancialYearId'];
     activeFinancialYear = json['ActiveFinancialYear'];
     displayCode = json['DisplayCode'];

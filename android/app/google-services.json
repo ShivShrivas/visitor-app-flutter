@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "142355559879",
+    "project_id": "visitorapp-1c097",
+    "storage_bucket": "visitorapp-1c097.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142355559879:android:8dc9aedbae66a8b36795e2",
+        "android_client_info": {
+          "package_name": "com.stonemen.visitorapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "142355559879-vtfn0o7onrqjflrfa79cmfljlrigggqu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBdwABS8CVpLcuh_Kdd3WckAjAnEzSLB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "142355559879-vtfn0o7onrqjflrfa79cmfljlrigggqu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
