@@ -65,12 +65,13 @@ class NotificationService{
 
     FirebaseMessaging.onMessage.listen((message) {
       if (kDebugMode) {
-        print("notifications title:"+message.notification!.title.toString());
-        print("notifications body:"+message.notification!.body.toString());
-        print("notifications channel id:"+message.notification!.android!.channelId.toString());
-        print("notifications click action:"+message.notification!.android!.clickAction.toString());
-        print("notifications color:"+message.notification!.android!.color.toString());
-        print("notifications count:"+message.notification!.android!.count.toString());
+        print(message);
+        print("notifications title:${message.notification!.title}");
+        print("notifications body:${message.notification!.body}");
+        print("notifications channel id:${message.notification!.android!.channelId}");
+        print("notifications click action:${message.notification!.android!.clickAction}");
+        print("notifications color:${message.notification!.android!.color}");
+        print("notifications count:${message.notification!.android!.count}");
       }
       if(Platform.isAndroid){
         initLocalNotifications(context, message);

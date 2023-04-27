@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
 
 import 'DashBoard.dart';
 import 'models/LoginResponse.dart';
@@ -71,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
      print(loginResponse);
      if(loginResponse.userName!=null){
        SharedPreferences pref = await SharedPreferences.getInstance();
-
+       Clipboard.setData(ClipboardData(text: widget.GSMID));
        String user = jsonEncode(loginResponse);
        pref.setString('userData', user);
        _sendDataToSecondScreen(context,loginResponse);
@@ -105,12 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -238,7 +233,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       SizedBox(height: 40,),
                       !_loading? GestureDetector(
                         onTap: () async {
-                            setState((){
+
+                                    setState((){
                             _loading=true;
                             });
                             await logIn(userIdController.text.toString(),passwordController.text.toString());
