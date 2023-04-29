@@ -36,14 +36,26 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       }
     });
     Timer(Duration(milliseconds: 4000), () {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MyHomePage(title: "Login Page", GSMID: GSMId,),
-          ));
+      Navigator.of(context).push(_createRoute());
     });
   }
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>MyHomePage(title: "Login Page", GSMID: GSMId,),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 10);
+        const end = Offset.zero;
+        const curve = Curves.bounceIn;
 
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
@@ -51,54 +63,50 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     return Scaffold(
       backgroundColor:Color.fromRGBO(255, 255, 255, 1.0),
       body: Container(
-              child: SingleChildScrollView(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+        color: Colors.deepPurpleAccent,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                Padding(padding: EdgeInsets.only(left: 20.0,right: 20.0,top:MediaQuery.of(context).size.height/3.9)
+                  ,child:  Image.asset("assets/images/splasg_ic.png"),),
 
-                    Column(
-                      children: [
-                      Padding(padding: EdgeInsets.only(left: 10.0,right: 10.0,top: 10.0)
-                        ,child:  Image.asset("assets/images/splash_bg.png"),),
-
-                      Column(
-                        children: [
-                          Text("Welcome",style: TextStyle(fontSize: 22,fontWeight: FontWeight.w300),),
-                          Text("to",style: TextStyle(fontSize: 12,fontWeight: FontWeight.w300),),
-                          Text("Visitor App",style: TextStyle(fontSize: 25,fontWeight: FontWeight.w500,color: Color.fromRGBO(
-                              132, 135, 250, 1.0)),),
-                        ],
-                      ),
-                    ],),
-                      Padding(padding: EdgeInsets.all(10),child:   GestureDetector(
-                        onTap: (){
-                        },
-                        child:  Container(
+                Column(
+                  children: [
+                    Text("Welcome",style: TextStyle(fontSize: 25,fontWeight: FontWeight.w300,fontFamily: 'Abel',color: Colors.white),),
+                    Text("to",style: TextStyle(fontSize: 12,fontWeight: FontWeight.w300,fontFamily: 'Abel',color: Colors.white),),
+                    Text("Visitor App",style: TextStyle(fontSize: 30,fontFamily: 'Abel',color: Color.fromRGBO(
+                        255, 255, 255, 1.0)),),
+                    SizedBox(height: 20,),
+                    Padding(padding: EdgeInsets.all(10),child:   GestureDetector(
+                      onTap: (){
+                      },
+                      child:  Card(
+                        elevation: 7,
+                        child: Container(
                           height: 50,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               gradient: LinearGradient(
                                   colors: [
-                                    Color.fromRGBO(143, 148, 251, 1),
-                                    Color.fromRGBO(143, 148, 251, .6),
+                                    Color.fromRGBO(255, 255, 255, 1.0),
+                                    Color.fromRGBO(
+                                        230, 228, 255, 1.0),
                                   ]
                               )
                           ),
                           child: Center(
-                            child: Text("Get Started", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontFamily: 'RaleWay',fontSize: 20),),
+                            child: Text("Get Started", style: TextStyle(color: Colors.deepPurpleAccent, fontWeight: FontWeight.bold,fontFamily: 'RaleWay',fontSize: 20),),
                           ),
                         ),
                       ),
-                        )
+                    ),
+                    )
                     ,
-                      Text("Version:2.0",style: TextStyle(fontSize: 10,fontWeight: FontWeight.w300),),
+                    Text("Version:2.0",style: TextStyle(fontSize: 10,fontWeight: FontWeight.w300,color: Colors.white70),),
 
-
-                    ],
-                  ),
+                  ],
                 ),
-              ),
+              ],),
       ),
     );
   }

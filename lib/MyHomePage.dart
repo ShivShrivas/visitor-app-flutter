@@ -65,11 +65,11 @@ class _MyHomePageState extends State<MyHomePage> {
       body: jsonBody,
       encoding: encoding,
     ));
-   if(response!=null){
+   if(LoginResponse.fromJson(json.decode(response.body)[0]).userId!=null){
      final List<dynamic> parsed = json.decode(response.body);
 
      final loginResponse = LoginResponse.fromJson(parsed[0]);
-     print(loginResponse);
+     print(response);
      if(loginResponse.userName!=null){
        SharedPreferences pref = await SharedPreferences.getInstance();
        Clipboard.setData(ClipboardData(text: widget.GSMID));
@@ -233,14 +233,20 @@ class _MyHomePageState extends State<MyHomePage> {
                       SizedBox(height: 40,),
                       !_loading? GestureDetector(
                         onTap: () async {
+                            if(userIdController.text.length>1 && passwordController.text.length>1){
+                              setState((){
+                                _loading=true;
+                              });
+                              await logIn(userIdController.text.toString(),passwordController.text.toString());
+                              setState((){
+                                _loading=false;
+                              });
 
-                                    setState((){
-                            _loading=true;
-                            });
-                            await logIn(userIdController.text.toString(),passwordController.text.toString());
-                            setState((){
-                            _loading=false;
-                            });
+                            }else{
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("Please Enter User ID and Password properly"),
+                              ));
+                            }
 
                         },
                         child:  Container(
