@@ -63,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     return Scaffold(
       backgroundColor:Color.fromRGBO(255, 255, 255, 1.0),
       body: Container(
-        color: Colors.deepPurpleAccent,
+        color:  Color.fromRGBO(112, 90, 255, 1.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

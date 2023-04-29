@@ -164,7 +164,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
 
-         Text("Login Here", style: TextStyle(fontSize:18,wordSpacing: 2,color: Colors.black, fontWeight: FontWeight.bold,fontFamily: 'RaleWay',),),
+         Text("┬┴┬┴┬┴┤Login Here├┬┴┬┴┬┴┬", style:     TextStyle(
+           fontSize: 20,
+           color: Colors.deepPurple,
+
+           shadows: [
+             Shadow(
+               blurRadius: 10.0,
+               color: Colors.deepPurpleAccent,
+               offset: Offset(5.0, 5.0),
+             ),
+           ],
+         )
+           ,),
 
                 Padding(
                   padding: EdgeInsets.all(30.0),
@@ -176,6 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.deepPurple),
                             boxShadow: [
                               BoxShadow(
                                   color: Color.fromRGBO(122, 106, 217, 0.2),
@@ -202,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     hintText: "User ID",
                                     hintStyle: TextStyle(color: Colors.grey[400],fontSize: 16),
                                     icon: Icon(Icons.account_circle),
-                                    iconColor: Colors.deepPurple.shade100
+                                    iconColor: Colors.deepPurple.shade300
 
                                 ),
                               ),
@@ -221,7 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   hintText: "Password",
                                   hintStyle: TextStyle(color: Colors.grey[400],fontSize: 16),
                                   icon: Icon(Icons.lock_open_sharp),
-                                  iconColor: Colors.deepPurple.shade100,
+                                  iconColor: Colors.deepPurple.shade300,
 
 
                                 ),
@@ -249,24 +262,27 @@ class _MyHomePageState extends State<MyHomePage> {
                             }
 
                         },
-                        child:  Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              gradient: LinearGradient(
-                                  colors: [
-                                    Color.fromRGBO(143, 148, 251, 1),
-                                    Color.fromRGBO(143, 148, 251, .6),
-                                  ]
-                              )
-                          ),
-                          child: Center(
-                            child: Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontFamily: 'RaleWay',),),
+                        child:  Card(
+                          elevation: 10,
+                          child: Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                gradient: LinearGradient(
+                                    colors: [
+                                      Color.fromRGBO(143, 148, 251, 1),
+                                      Color.fromRGBO(143, 148, 251, .6),
+                                    ]
+                                )
+                            ),
+                            child: Center(
+                              child: Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontFamily: 'RaleWay',fontSize: 18),),
+                            ),
                           ),
                         ),
                       ):Center(child:CircularProgressIndicator()),
 
-                      SizedBox(height: 70,),
+                      SizedBox(height: 20,),
                       Text("Forgot Password?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),),
                     ],
                   ),
