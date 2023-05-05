@@ -54,7 +54,7 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
                             children: <Widget>[
                               new CircleAvatar(
                                 backgroundImage:
-                                new AssetImage('assets/images/img.png'),
+                                new AssetImage('assets/images/ic_launcher.png'),
                                 radius: _height / 10,
                               ),
                               new SizedBox(

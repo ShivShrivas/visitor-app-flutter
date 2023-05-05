@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   }
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>MyHomePage(title: "Login Page", GSMID: GSMId,),
+      pageBuilder: (context, animation, secondaryAnimation) =>MyHomePage(title: "Login Page", GSMID: GSMId??"",),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 10);
         const end = Offset.zero;

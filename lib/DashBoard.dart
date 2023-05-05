@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -62,7 +63,7 @@ TextEditingController mobileController=TextEditingController();
      ));
      print(response);
      final List<dynamic> parsed = json.decode(response.body);
-     print(response.body);
+     print("Data of meeting with  ${response.body}");
 
      setState(() {
        meetingWithResponseList = (json.decode(response.body) as List)
@@ -282,12 +283,32 @@ print(date+"T"+time.split(" ")[0]+":00");
             ),
           ),
 
-          SizedBox(
-              height: 60,
-              child: Text(
-                "Choose an Operation",
-                style: TextStyle(fontSize: 20, color: Colors.indigo),
-              )),
+          Container(
+              padding: EdgeInsets.only(top: 0, left: 10, right: 10,bottom: 8),
+              child: Container(
+                  padding: EdgeInsets.all(6),
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: Color(0xff5731ff),
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      padding: EdgeInsets.all(10),
+                      child: Container(
+                        padding: EdgeInsets.zero,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.white,
+                                  blurRadius: 7,
+                                  spreadRadius: 12)
+                            ]),
+                        width: double.infinity,
+                        height: 22,
+                        child: Center(
+                          child: Text("Choose an option",style: TextStyle(fontSize: 16,color: Colors.deepPurple),),
+                        ),
+                      )))),
 
           //TODO Grid Dashboard
           GridDashboard(relationShipId:widget.loginResponse.relationshipId)

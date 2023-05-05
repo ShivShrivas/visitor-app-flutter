@@ -29,6 +29,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late bool _loading=false;
+  late bool _passwordVisible=false;
   late double _progressValue;
 
   @override
@@ -206,6 +207,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                   border: Border(bottom: BorderSide(color: Colors.deepPurple.shade50))
                               ),
                               child: TextField(
+                                onTap: (){
+                                  setState(() {
+                                    _loading=false;
+                                  });
+                                },
                                 controller:userIdController ,
                                 style: TextStyle(
                                     fontSize:16
@@ -223,19 +229,39 @@ class _MyHomePageState extends State<MyHomePage> {
                             Container(
                               padding: EdgeInsets.all(8.0),
                               child: TextField(
+                                onTap: (){
+                                  setState(() {
+                                    _loading=false;
+                                  });
+                                },
                                 controller: passwordController,
+                                obscureText: !_passwordVisible,
                                 style: TextStyle(
                                     fontSize: 16
 
                                 ),
-                                obscureText: true,
+
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Password",
                                   hintStyle: TextStyle(color: Colors.grey[400],fontSize: 16),
                                   icon: Icon(Icons.lock_open_sharp),
                                   iconColor: Colors.deepPurple.shade300,
-
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      // Based on passwordVisible state choose the icon
+                                      _passwordVisible
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: Colors.deepPurpleAccent.shade100,
+                                    ),
+                                    onPressed: () {
+                                      // Update the state i.e. toogle the state of passwordVisible variable
+                                      setState(() {
+                                        _passwordVisible = !_passwordVisible;
+                                      });
+                                    },
+                                  ),
 
                                 ),
                               ),
