@@ -216,6 +216,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 style: TextStyle(
                                     fontSize:16
                                 ),
+                                scrollPadding: EdgeInsets.only(bottom:40),
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
                                     hintText: "User ID",
@@ -235,11 +236,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                   });
                                 },
                                 controller: passwordController,
+
                                 obscureText: !_passwordVisible,
                                 style: TextStyle(
                                     fontSize: 16
 
                                 ),
+                                scrollPadding: EdgeInsets.only(bottom:40),
 
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
