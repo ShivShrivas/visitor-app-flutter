@@ -335,262 +335,276 @@ class _DashboardState extends State<Dashboard> {
         ),
         backgroundColor: Colors.indigoAccent,
         onPressed: () {
-          showDialog(
-              context: context,
-              builder: (BuildContext dialogContext) {
-                return AlertDialog(
-                  scrollable: true,
-                  title: Text('Schedule A Meeting'),
-                  content: StatefulBuilder(
-                      builder: (BuildContext context, StateSetter setState) {
-                        return Padding(
-                          padding: const EdgeInsets.all(0.0),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              children: <Widget>[
-                                TextFormField(
-                                  controller: nameController,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Please Enter Name";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: 'Name',
-                                    icon: Icon(Icons.account_box),
-                                  ),
-                                ),
-                                TextFormField(
-                                  controller: emailController,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Please Enter Email";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: 'Email',
-                                    icon: Icon(Icons.email),
-                                  ),
-                                ),
-                                TextFormField(
-                                  controller: mobileController,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Please Enter Mobile Number";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: 'Mobile',
-                                    icon: Icon(Icons.call),
-                                  ),
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.person,
-                                      color: Colors.grey,
+          if(meetingWithResponseList.isNotEmpty && currencies.isNotEmpty){
+            showDialog(
+                context: context,
+                builder: (BuildContext dialogContext) {
+                  return AlertDialog(
+                    scrollable: true,
+                    title: Text('Schedule A Meeting'),
+                    content: StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) {
+                          return Padding(
+                            padding: const EdgeInsets.all(0.0),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                children: <Widget>[
+                                  TextFormField(
+                                    controller: nameController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Please Enter Name";
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                    decoration: InputDecoration(
+                                      labelText: 'Name',
+                                      icon: Icon(Icons.account_box),
                                     ),
-                                    Container(
-                                      height: 60,
-                                      width: 200,
-                                      child: DropdownButton<String>(
-                                        alignment: Alignment.center,
-                                        value: selectedPerson,
-                                        items: [
-                                          const DropdownMenuItem(child: Text(
-                                            'Meeting With',
-                                            style: TextStyle(fontSize: 14),),
-                                              value: ""),
-                                          ...meetingWithResponseList.map<
-                                              DropdownMenuItem<String>>((data) {
-                                            return DropdownMenuItem(
-                                              child: Text(data.name!,
-                                                  style: TextStyle(
-                                                      fontSize: 14)),
-                                              value: data.code!,
-                                            );
-                                          }).toList(),
-
-                                        ],
-                                        onChanged: (data) {
-                                          print(data);
-                                          setState(() {
-                                            selectedPerson = data!;
-                                            print(selectedPerson);
-                                          });
-                                        },
-
-
-                                        // hint: const Text(
-                                        //   "Select Purpose",
-                                        //   style: TextStyle(
-                                        //       color: Colors.black,
-                                        //       fontSize: 11,
-                                        //       fontWeight: FontWeight.w500),
-                                        // ),
-                                      ),
-                                    )
-
-                                  ],
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.speaker_notes,
-                                      color: Colors.grey,
-                                    ),
-                                    Container(
-                                      height: 60,
-                                      width: 200,
-                                      child: DropdownButton<String>(
-                                        alignment: Alignment.center,
-                                        value: selectedPurpose,
-                                        items: [
-                                          const DropdownMenuItem(child: Text(
-                                              'Select Purpose',
-                                              style: TextStyle(fontSize: 14)),
-                                              value: ""),
-                                          ...currencies.map<
-                                              DropdownMenuItem<String>>((data) {
-                                            return DropdownMenuItem(
-                                              child: Text(data.purposeName!,
-                                                  style: TextStyle(
-                                                      fontSize: 14)),
-                                              value: data.code.toString(),
-                                            );
-                                          }).toList(),
-
-                                        ],
-                                        onChanged: (data) {
-                                          print(data);
-                                          setState(() {
-                                            selectedPurpose = data!;
-                                            print(selectedPurpose);
-                                          });
-                                        },
-
-
-                                        // hint: const Text(
-                                        //   "Select Purpose",
-                                        //   style: TextStyle(
-                                        //       color: Colors.black,
-                                        //       fontSize: 11,
-                                        //       fontWeight: FontWeight.w500),
-                                        // ),
-                                      ),
-                                    )
-
-                                  ],
-                                ),
-                                TextFormField(
-                                  controller: timeController,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Please Enter Time";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  onTap: () async {
-                                    print("done");
-                                    TimeOfDay? time = await getTime(
-                                      context: context,
-                                      title: "Select Your Time",
-
-                                    );
-                                    final localizations = MaterialLocalizations
-                                        .of(context);
-                                    final formattedTimeOfDay = localizations
-                                        .formatTimeOfDay(time!);
-                                    timeController.text = formattedTimeOfDay;
-                                    print(time);
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: 'Time',
-                                    icon: Icon(Icons.watch_later),
                                   ),
+                                  TextFormField(
+                                    controller: emailController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Please Enter Email";
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                    decoration: InputDecoration(
+                                      labelText: 'Email',
+                                      icon: Icon(Icons.email),
+                                    ),
+                                  ),
+                                  TextFormField(
+                                    controller: mobileController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Please Enter Mobile Number";
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                    decoration: InputDecoration(
+                                      labelText: 'Mobile',
+                                      icon: Icon(Icons.call),
+                                    ),
+                                  ),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
 
-                                ),
-                                TextFormField(
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Please Enter Date";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  controller: dateController,
-                                  onTap: () async {
-                                    DateTime? date = DateTime(1900);
-                                    FocusScope.of(context).requestFocus(
-                                        FocusNode());
-                                    date = await showDatePicker(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.person,
+                                        color: Colors.grey,
+                                      ),
+                                      Expanded(
+                                        child: DropdownButton<String>(
+                                          isExpanded: true,
+                                          alignment: Alignment.center,
+                                          value: selectedPerson,
+                                          items: [
+                                            const DropdownMenuItem(child: Text(
+                                              'Meeting With',
+                                              style: TextStyle(fontSize: 14),),
+                                                value: ""),
+                                            ...meetingWithResponseList.map<
+                                                DropdownMenuItem<String>>((data) {
+                                              return DropdownMenuItem(
+                                                child: Text(data.name!,
+                                                    style: TextStyle(
+                                                        fontSize: 14)),
+                                                value: data.code!,
+                                              );
+                                            }).toList(),
+
+                                          ],
+                                          onChanged: (data) {
+                                            print(data);
+                                            setState(() {
+                                              selectedPerson = data!;
+                                              print(selectedPerson);
+                                            });
+                                          },
+
+
+                                          // hint: const Text(
+                                          //   "Select Purpose",
+                                          //   style: TextStyle(
+                                          //       color: Colors.black,
+                                          //       fontSize: 11,
+                                          //       fontWeight: FontWeight.w500),
+                                          // ),
+                                        ),
+                                      )
+
+                                    ],
+                                  ),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.speaker_notes,
+                                        color: Colors.grey,
+                                      ),
+                                      Expanded(
+                                        child: DropdownButton<String>(
+                                          isExpanded: true,
+
+                                          alignment: Alignment.center,
+                                          value: selectedPurpose,
+                                          items: [
+                                            const DropdownMenuItem(child: Text(
+                                                'Select Purpose',
+                                                style: TextStyle(fontSize: 14)),
+                                                value: ""),
+                                            ...currencies.map<
+                                                DropdownMenuItem<String>>((data) {
+                                              return DropdownMenuItem(
+                                                child: Text(data.purposeName!,
+                                                    style: TextStyle(
+                                                        fontSize: 14)),
+                                                value: data.code.toString(),
+                                              );
+                                            }).toList(),
+
+                                          ],
+                                          onChanged: (data) {
+                                            print(data);
+                                            setState(() {
+                                              selectedPurpose = data!;
+                                              print(selectedPurpose);
+                                            });
+                                          },
+
+
+                                          // hint: const Text(
+                                          //   "Select Purpose",
+                                          //   style: TextStyle(
+                                          //       color: Colors.black,
+                                          //       fontSize: 11,
+                                          //       fontWeight: FontWeight.w500),
+                                          // ),
+                                        ),
+                                      )
+
+                                    ],
+                                  ),
+                                  TextFormField(
+                                    controller: timeController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Please Enter Time";
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                    onTap: () async {
+                                      print("done");
+                                      TimeOfDay? time = await getTime(
                                         context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(1900),
-                                        lastDate: DateTime(2100));
+                                        title: "Select Your Time",
 
-                                    dateController.text =
-                                    "${date?.toLocal()}".split(' ')[0];
-                                  },
-                                  decoration: InputDecoration(
+                                      );
+                                      final localizations = MaterialLocalizations
+                                          .of(context);
+                                      final formattedTimeOfDay = localizations
+                                          .formatTimeOfDay(time!);
+                                      switch(int.parse(formattedTimeOfDay.split(":")[0])<=9){
+                                        case true:
+                                          timeController.text = "0"+formattedTimeOfDay;
+                                          break;
+                                        case false:
+                                          timeController.text = "0"+formattedTimeOfDay;
+                                          break;
+                                      }
 
-                                    labelText: 'Date',
-                                    icon: Icon(Icons.calendar_month),
+
+                                    },
+                                    decoration: InputDecoration(
+                                      labelText: 'Time',
+                                      icon: Icon(Icons.watch_later),
+                                    ),
+
                                   ),
-                                ),
-                              ],
+                                  TextFormField(
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Please Enter Date";
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                    controller: dateController,
+                                    onTap: () async {
+                                      DateTime? date = DateTime(1900);
+                                      FocusScope.of(context).requestFocus(
+                                          FocusNode());
+                                      date = await showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(1900),
+                                          lastDate: DateTime(2100));
+
+                                      dateController.text =
+                                      "${date?.toLocal()}".split(' ')[0];
+                                    },
+                                    decoration: InputDecoration(
+
+                                      labelText: 'Date',
+                                      icon: Icon(Icons.calendar_month),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }),
-                  actions: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        MaterialButton(
-                            child: Text("Cancel"),
-                            onPressed: () {
-                              // your code
-                            }),
+                          );
+                        }),
+                    actions: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          MaterialButton(
+                              child: Text("Cancel"),
+                              onPressed: () {
+                                // your code
+                              }),
 
-                        MaterialButton(
-                            child: Text("Schedule", style: TextStyle(
-                                color: Colors.indigo
-                            ),),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                // If the form is valid, display a snackbar. In the real world,
-                                // you'd often call a server or save the information in a database.
-                                scheduleAmeeting(nameController.value.text,
-                                    emailController.value.text,
-                                    mobileController.value.text,
-                                    timeController.value.text,
-                                    dateController.value.text, dialogContext);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Processing Data')),
-                                );
-                              }
-                            }),
-                      ],
-                    )
+                          MaterialButton(
+                              child: Text("Schedule", style: TextStyle(
+                                  color: Colors.indigo
+                              ),),
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  // If the form is valid, display a snackbar. In the real world,
+                                  // you'd often call a server or save the information in a database.
+                                  scheduleAmeeting(nameController.value.text,
+                                      emailController.value.text,
+                                      mobileController.value.text,
+                                      timeController.value.text,
+                                      dateController.value.text, dialogContext);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Processing Data')),
+                                  );
+                                }
+                              }),
+                        ],
+                      )
 
-                  ],
-                );
-              });
+                    ],
+                  );
+                });
+          }else{
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("can't found meeting with person and purpose also please check")));
+
+            }
+
         },
       ),
     );
