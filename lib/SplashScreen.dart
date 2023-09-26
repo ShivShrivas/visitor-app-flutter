@@ -28,6 +28,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     notificationService.isTokenRefresh();
     notificationService.getDeviceToken().then((value){
       setState(() {
+        print("GSMID"+value);
         GSMId=value;
       });
       if (kDebugMode) {
@@ -35,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         print(value);
       }
     });
-    Timer(Duration(milliseconds: 4000), () {
+    Timer(Duration(milliseconds: 2000), () {
       Navigator.of(context).push(_createRoute());
     });
   }

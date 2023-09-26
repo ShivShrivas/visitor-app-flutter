@@ -66,17 +66,20 @@ class _MyHomePageState extends State<MyHomePage> {
       body: jsonBody,
       encoding: encoding,
     ));
-   if(LoginResponse.fromJson(json.decode(response.body)[0]).userId!=null){
+   if(LoginResponse.fromJson(json.decode(response.body)[0]).userId!=0 ||LoginResponse.fromJson(json.decode(response.body)[0]).userId!=null){
      final List<dynamic> parsed = json.decode(response.body);
 
      final loginResponse = LoginResponse.fromJson(parsed[0]);
-     print(response);
-     if(loginResponse.userName!=null){
+     print("login response ${loginResponse.userId}");
+     if(loginResponse.userId!=0 && loginResponse.userId!=null){
        SharedPreferences pref = await SharedPreferences.getInstance();
        Clipboard.setData(ClipboardData(text: widget.GSMID));
        String user = jsonEncode(loginResponse);
        pref.setString('userData', user);
        _sendDataToSecondScreen(context,loginResponse);
+       setState(() {
+         _loading=false;
+       });
      }else{
        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
          content: Text("User Id or Password Incorrect"),
@@ -89,6 +92,9 @@ class _MyHomePageState extends State<MyHomePage> {
      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
        content: Text("Something went wrong"),
      ));
+     setState(() {
+       _loading=false;
+     });
    }
 
 

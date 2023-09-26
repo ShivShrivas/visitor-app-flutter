@@ -90,21 +90,21 @@ class LoginResponse {
 
 
   LoginResponse.fromJson(dynamic json) {
-    userId = json['UserId']??"";
+    userId = json['UserId']??0;
     userName = json['UserName']??"";
-    userTypeId = json['UserTypeId']??"";
+    userTypeId = json['UserTypeId']??0;
     loginAs = json['loginAs']??"";
     lastLogin = json['LastLogin']??"";
-    activeAcademicYearId = json['ActiveAcademicYearId']??"";
+    activeAcademicYearId = json['ActiveAcademicYearId']??0;
     activeAcademicYear = json['ActiveAcademicYear']??'';
-    activeFinancialYearId = json['ActiveFinancialYearId'];
-    activeFinancialYear = json['ActiveFinancialYear'];
+    activeFinancialYearId = json['ActiveFinancialYearId']??0;
+    activeFinancialYear = json['ActiveFinancialYear']??"";
     displayCode = json['DisplayCode'];
-    relationshipId = json['RelationshipId'];
-    isHO = json['IsHO'];
-    isSchool = json['IsSchool'];
-    isCollege = json['IsCollege'];
-    isSociety = json['IsSociety'];
+    relationshipId = json['RelationshipId']??0;
+    isHO = json['IsHO']??0;
+    isSchool = json['IsSchool']??0;
+    isCollege = json['IsCollege']??false;
+    isSociety = json['IsSociety']??false;
     branchLogo = json['BranchLogo']??"";
     groupCode = json['GroupCode']??"";
     societyCode = json['SocietyCode']??"";
@@ -126,11 +126,11 @@ class LoginResponse {
     designationCode = json['DesignationCode']??"";
     designation = json['Designation']??"";
     affiliationNo = json['AffiliationNo']??"";
-    affiliationDate = json['AffiliationDate']??"";
+    affiliationDate = json['AffiliationDate']??0;
     schoolStatus = json['SchoolStatus']??"";
     schoolNo = json['SchoolNo']??"";
     srNo = json['SrNo']??"";
-    state = json['State']??"";
+    state = json['State']??0;
     response = json['Response']??"";
   }
 

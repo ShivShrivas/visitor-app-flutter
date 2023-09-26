@@ -7,7 +7,8 @@ import 'package:visitor_app_flutter/ScheduleMeetList.dart';
 
 class GridDashboard extends StatefulWidget {
   final int relationShipId;
-  const GridDashboard({Key? key, required this.relationShipId}) : super(key: key);
+  final int userId;
+  const GridDashboard({Key? key, required this.relationShipId,required this.userId}) : super(key: key);
 
   @override
   State<GridDashboard> createState() => _GridDashboardState();
@@ -23,7 +24,7 @@ class _GridDashboardState extends State<GridDashboard> {
   Items item2 = new Items(
     title: "Ongoing Meeting",
     subtitle: "Ongoing meeting list",
-    event: "4 Items",
+    event: "",
     img: "assets/images/ongoingmeeting.png",
   );
   Items item3 = new Items(
@@ -59,25 +60,25 @@ class _GridDashboardState extends State<GridDashboard> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ActionableList(relationShipId: widget.relationShipId,),
+                      builder: (context) => ActionableList(relationShipId: widget.relationShipId,userId:widget.userId),
                     ));
               }else if(data.title.compareTo("Ongoing Meeting")==0){
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OnGoingMeetList(relationShipId: widget.relationShipId,),
+                      builder: (context) => OnGoingMeetList(relationShipId: widget.relationShipId,userId:widget.userId),
                     ));
               }else if(data.title.compareTo("Schedule Meeting")==0){
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ScheduleMeetList(relationShipId: widget.relationShipId,),
+                      builder: (context) => ScheduleMeetList(relationShipId: widget.relationShipId,userId:widget.userId),
                     ));
               }else if(data.title.compareTo("Complete Meeting")==0){
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ComplteteMeetList(relationShipId: widget.relationShipId,),
+                      builder: (context) => ComplteteMeetList(relationShipId: widget.relationShipId,userId:widget.userId),
                     ));
               }
             },

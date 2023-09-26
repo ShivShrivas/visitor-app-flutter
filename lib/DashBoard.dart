@@ -42,6 +42,7 @@ class _DashboardState extends State<Dashboard> {
 
 
   Future<void> getMeetingWithResponse() async {
+    print("relationship id ${widget.loginResponse.relationshipId}");
     Map<String, dynamic> body = {
       "Action": 7,
       "FYId": 1,
@@ -77,6 +78,7 @@ class _DashboardState extends State<Dashboard> {
   Future<void> scheduleAmeeting(String name, String email, String mobile,
       String time, String date, BuildContext dialogContext) async {
     print(date + "T" + time.split(" ")[0] + ":00");
+    print("person code"+selectedPerson);
     Map<String, dynamic> body = {
       "TransID": "",
       "MeetingDate": date + "T" + time.split(" ")[0] + ":00",
@@ -85,7 +87,7 @@ class _DashboardState extends State<Dashboard> {
       "EmailId": email,
       "VisitorName": name,
       "PurposeId": selectedPurpose,
-      "AuthorizedOrOtherPersonCode": selectedPerson,
+      "AuthorizedOrOtherPersonCode": selectedPerson.split("|")[0],
       "StatusId": 1,
       "RelationshipId": widget.loginResponse.relationshipId,
       "SessionId": "1",
@@ -206,12 +208,12 @@ class _DashboardState extends State<Dashboard> {
                                       padding: EdgeInsets.all(8.0),
                                       child: GestureDetector(
                                         onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    UserProfile(),
-                                              ));
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //       builder: (context) =>
+                                          //           UserProfile(),
+                                          //     ));
                                         },
                                         child: Container(
                                           padding: EdgeInsets.all(5),
@@ -264,20 +266,20 @@ class _DashboardState extends State<Dashboard> {
                                   ],
                                 ),
                               ),
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            NotificationPage(),
-                                      ));
-                                },
-                                alignment: Alignment.centerLeft,
-                                icon: Image.asset(
-                                    "assets/images/notification.png",
-                                    width: 24),
-                              )
+                              // IconButton(
+                              //   onPressed: () {
+                              //     Navigator.push(
+                              //         context,
+                              //         MaterialPageRoute(
+                              //           builder: (context) =>
+                              //               NotificationPage(),
+                              //         ));
+                              //   },
+                              //   alignment: Alignment.centerLeft,
+                              //   icon: Image.asset(
+                              //       "assets/images/notification.png",
+                              //       width: 24),
+                              // )
                             ],
                           ),
                         ),
@@ -325,7 +327,7 @@ class _DashboardState extends State<Dashboard> {
                       )))),
 
           //TODO Grid Dashboard
-          GridDashboard(relationShipId: widget.loginResponse.relationshipId)
+          GridDashboard(relationShipId: widget.loginResponse.relationshipId,userId:widget.loginResponse.userId)
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -335,7 +337,7 @@ class _DashboardState extends State<Dashboard> {
         ),
         backgroundColor: Colors.indigoAccent,
         onPressed: () {
-          if(meetingWithResponseList.isNotEmpty && currencies.isNotEmpty){
+          if(meetingWithResponseList.length!=0 && meetingWithResponseList!=null && currencies!=null && currencies.length!=0 ){
             showDialog(
                 context: context,
                 builder: (BuildContext dialogContext) {
@@ -379,6 +381,7 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                   ),
                                   TextFormField(
+                                    maxLength: 10,
                                     controller: mobileController,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
@@ -414,10 +417,10 @@ class _DashboardState extends State<Dashboard> {
                                             ...meetingWithResponseList.map<
                                                 DropdownMenuItem<String>>((data) {
                                               return DropdownMenuItem(
-                                                child: Text(data.name!,
+                                                child: Text(data.name??"",
                                                     style: TextStyle(
                                                         fontSize: 14)),
-                                                value: data.code!,
+                                                value: data.code,
                                               );
                                             }).toList(),
 
@@ -465,7 +468,7 @@ class _DashboardState extends State<Dashboard> {
                                             ...currencies.map<
                                                 DropdownMenuItem<String>>((data) {
                                               return DropdownMenuItem(
-                                                child: Text(data.purposeName!,
+                                                child: Text(data.purposeName??"",
                                                     style: TextStyle(
                                                         fontSize: 14)),
                                                 value: data.code.toString(),
@@ -476,7 +479,7 @@ class _DashboardState extends State<Dashboard> {
                                           onChanged: (data) {
                                             print(data);
                                             setState(() {
-                                              selectedPurpose = data!;
+                                              selectedPurpose = data??"";
                                               print(selectedPurpose);
                                             });
                                           },
@@ -519,7 +522,7 @@ class _DashboardState extends State<Dashboard> {
                                           timeController.text = "0"+formattedTimeOfDay;
                                           break;
                                         case false:
-                                          timeController.text = "0"+formattedTimeOfDay;
+                                          timeController.text = formattedTimeOfDay;
                                           break;
                                       }
 

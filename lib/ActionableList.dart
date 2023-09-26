@@ -7,7 +7,8 @@ import 'package:visitor_app_flutter/models/ActionableListResponse.dart';
 
 class ActionableList extends StatefulWidget {
   final int relationShipId;
-  const ActionableList({Key? key, required this.relationShipId}) : super(key: key);
+  final int userId;
+  const ActionableList({Key? key, required this.relationShipId,required this.userId}) : super(key: key);
 
   @override
   State<ActionableList> createState() => _ActionableListState();
@@ -78,7 +79,7 @@ class _ActionableListState extends State<ActionableList> {
     print("to date: " + toDate);
 
     Map<String, dynamic> body =
-    {"Action":15,"FYId":1,"FromDate":fromDate,"UserId":400,"PurposeId":"","ToDate":toDate,"SessionId":1,
+    {"Action":15,"FYId":1,"FromDate":fromDate,"UserId":widget.userId.toString(),"PurposeId":"","ToDate":toDate,"SessionId":1,
       "RelationshipId": widget.relationShipId.toString()
     };
     String jsonBody = json.encode(body);

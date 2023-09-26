@@ -7,7 +7,8 @@ import 'models/ScheduleMeetingResponse.dart';
 
 class ScheduleMeetList extends StatefulWidget {
   final int relationShipId;
-  const ScheduleMeetList({Key? key,required this.relationShipId}) : super(key: key);
+  final int userId;
+  const ScheduleMeetList({Key? key,required this.relationShipId,required this.userId}) : super(key: key);
 
   @override
   State<ScheduleMeetList> createState() => _ScheduleMeetListState();
@@ -78,6 +79,7 @@ class _ScheduleMeetListState extends State<ScheduleMeetList> {
       "Action": 9,
       "StatusId": 1,
       "FromDate": fromDate,
+      "userId":widget.userId,
       "ToDate": toDate,
       "SessionId": "1",
       "FYId": "1",

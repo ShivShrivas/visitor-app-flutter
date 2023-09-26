@@ -8,7 +8,8 @@ import 'models/ScheduleMeetingResponse.dart';
 
 class OnGoingMeetList extends StatefulWidget {
   final int relationShipId;
-  const OnGoingMeetList({Key? key, required this.relationShipId}) : super(key: key);
+  final int userId;
+  const OnGoingMeetList({Key? key, required this.relationShipId,required this.userId}) : super(key: key);
 
   @override
   State<OnGoingMeetList> createState() => _OnGoingMeetListState();
@@ -76,10 +77,11 @@ class _OnGoingMeetListState extends State<OnGoingMeetList> {
     print("to date: " + toDate);
 
     Map<String, dynamic> body = {
-      "Action": 9,
+      "Action": 13,
       "StatusId": 1,
       "FromDate": fromDate,
       "ToDate": toDate,
+      "userId":widget.userId,
       "SessionId": "1",
       "FYId": "1",
       "RelationshipId":widget.relationShipId.toString()
@@ -87,7 +89,7 @@ class _OnGoingMeetListState extends State<OnGoingMeetList> {
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
     final url = Uri.parse(
-        'http://stonemen.bsninfotech.org/Api/VisitorDashBoardApi/GetOnGoingMeeting');
+        'https://stonemen.bsninfotech.org/Api/VisitorTransactionApi/MeetingReport');
     final headers = {'Content-Type': 'application/json'};
     var response = (await http.post(
       url,
