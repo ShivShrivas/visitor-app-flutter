@@ -37,8 +37,7 @@ class _OnGoingMeetListState extends State<OnGoingMeetList> {
         selectedDate = picked;
         _FromDate.value = TextEditingValue(text:  "${picked?.toLocal()}".split(' ')[0]);
         fromDateGlobal=_FromDate.value.toString();
-        getScheduleMeetingList(fromDateGlobal, toDateGlobal);
-        _isLoading=true;
+
       });
   }
 
@@ -53,8 +52,7 @@ class _OnGoingMeetListState extends State<OnGoingMeetList> {
         selectedDate = picked;
         _ToDate.value = TextEditingValue(text: "${picked?.toLocal()}".split(' ')[0]);
         toDateGlobal=_ToDate.value.toString();
-        getScheduleMeetingList(fromDateGlobal, toDateGlobal);
-        _isLoading=true;
+
 
       });
   }
@@ -119,6 +117,8 @@ class _OnGoingMeetListState extends State<OnGoingMeetList> {
 
   @override
   Widget build(BuildContext context) {
+    final _width = MediaQuery.of(context).size.width;
+    final _height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.indigo,
@@ -164,6 +164,35 @@ class _OnGoingMeetListState extends State<OnGoingMeetList> {
                               color: Colors.indigo,
                             ),
                           ),
+                        ),
+                      ),
+                    ),
+                  ),   new Padding(
+                    padding: new EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: (){
+                        getScheduleMeetingList(fromDateGlobal, toDateGlobal);
+                        _isLoading=true;
+                      },
+                      child: new Container(
+                        width: _width / 5,
+                        height: _height / 20,
+                        decoration: new BoxDecoration(
+                            color: const Color(0xFF0A5CFF),
+                            borderRadius: new BorderRadius.all(
+                                new Radius.circular(_height / 90)),
+                            boxShadow: [
+                              new BoxShadow(
+                                  color: Colors.blueAccent.shade100,
+                                  blurRadius: 2.0,
+                                  offset: new Offset(3, 3.0))
+                            ]),
+                        child: new Center(
+                          child: new Text('Search',
+                              style: new TextStyle(
+                                  fontSize: 12.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
                         ),
                       ),
                     ),

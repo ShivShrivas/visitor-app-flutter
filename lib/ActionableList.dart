@@ -37,8 +37,8 @@ class _ActionableListState extends State<ActionableList> {
         selectedDate = picked;
         _FromDate.value = TextEditingValue(text:  "${picked?.toLocal()}".split(' ')[0]);
         fromDateGlobal=_FromDate.text.toString();
-        getScheduleMeetingList(fromDateGlobal, toDateGlobal);
-        _isLoading=true;
+       // getScheduleMeetingList(fromDateGlobal, toDateGlobal);
+
       });
   }
 
@@ -55,8 +55,8 @@ class _ActionableListState extends State<ActionableList> {
         _ToDate.value = TextEditingValue(text: "${picked?.toLocal()}".split(' ')[0]);
         toDateGlobal=_ToDate.text.toString();
 
-        getScheduleMeetingList(fromDateGlobal, toDateGlobal);
-        _isLoading=true;
+       // getScheduleMeetingList(fromDateGlobal, toDateGlobal);
+
 
       });
   }
@@ -107,6 +107,9 @@ class _ActionableListState extends State<ActionableList> {
 
   @override
   void initState() {
+    super.initState();
+    getDates();
+    getScheduleMeetingList(fromDateGlobal, toDateGlobal);
     setState(() {
       getDates();
       getScheduleMeetingList(fromDateGlobal, toDateGlobal);
@@ -115,6 +118,8 @@ class _ActionableListState extends State<ActionableList> {
 
   @override
   Widget build(BuildContext context) {
+    final _width = MediaQuery.of(context).size.width;
+    final _height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.indigo,
@@ -163,6 +168,36 @@ class _ActionableListState extends State<ActionableList> {
                         ),
                       ),
                     ),
+                  ),
+                  new Padding(
+                    padding: new EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: (){
+                        getScheduleMeetingList(fromDateGlobal, toDateGlobal);
+                        _isLoading=true;
+                      },
+                      child: new Container(
+                        width: _width / 5,
+                        height: _height / 20,
+                        decoration: new BoxDecoration(
+                            color: const Color(0xFF0A5CFF),
+                            borderRadius: new BorderRadius.all(
+                                new Radius.circular(_height / 90)),
+                            boxShadow: [
+                              new BoxShadow(
+                                  color: Colors.blueAccent.shade100,
+                                  blurRadius: 2.0,
+                                  offset: new Offset(3, 3.0))
+                            ]),
+                        child: new Center(
+                          child: new Text('Search',
+                              style: new TextStyle(
+                                  fontSize: 12.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ),
                   )
                 ]),
           ),
@@ -192,10 +227,10 @@ class _ActionableListState extends State<ActionableList> {
   Widget visitorItemCard(BuildContext context, int index) {
     return GestureDetector(
       onTap: (){
-        Navigator.push(
+        Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => ActionableDetailsPage(listResponse: listSchduleMeeting[index]),
+              builder: (context) => ActionableDetailsPage(listResponse: listSchduleMeeting[index],userId:widget.userId,relationShipId:widget.relationShipId),
             ));
       },
       child: Card(

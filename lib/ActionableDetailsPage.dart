@@ -3,9 +3,13 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:visitor_app_flutter/models/ActionableListResponse.dart';
 
+import 'ActionableList.dart';
+
 class ActionableDetailsPage extends StatefulWidget {
   final ActionableListResponse listResponse;
-  const ActionableDetailsPage({Key? key, required this.listResponse}) : super(key: key);
+  final int relationShipId;
+  final int userId;
+  const ActionableDetailsPage({Key? key, required this.listResponse,required this.userId,required this.relationShipId}) : super(key: key);
 
   @override
   State<ActionableDetailsPage> createState() => _ActionableDetailsPageState();
@@ -574,12 +578,17 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
 
     if(response.body=='"1"'){
       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(content: Text('In Response you got ${response.body}. Your status is ${s} and status id is ${i}')),
+         SnackBar(content: Text('Person ${s}ed!!')),
 
       );
       setState(() {
         Navigator.pop(dialogContext);
         remarkController.clear();
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ActionableList(relationShipId: widget.relationShipId,userId:widget.userId),
+            ));
 
 
       });
