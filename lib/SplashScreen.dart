@@ -1,9 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:visitor_app_flutter/MyHomePage.dart';
 import 'package:visitor_app_flutter/NotificationService.dart';
+import 'package:visitor_app_flutter/models/LoginResponse.dart';
+
+import 'DashBoard.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key, required String title}) : super(key: key);
@@ -22,6 +27,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   void initState() {
     // TODO: implement initState
     super.initState();
+
     notificationService.requestNotificationPermission();
     notificationService.firebaseInit(context);
     notificationService.setupInteractMessage(context);
@@ -36,11 +42,23 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         print(value);
       }
     });
-    Timer(Duration(milliseconds: 2000), () {
-      Navigator.of(context).push(_createRoute());
+
+    Timer(Duration(milliseconds: 100), () async {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? userdata=pref.getString("userData");
+      if(pref.getString("token")!=null && pref.getString("userData")!=null && pref.getString("token")!.length>1 && pref.getString("userData")!.length>1){
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Dashboard(loginResponse: LoginResponse.fromJson(jsonDecode( userdata!)) , LoginResponse: LoginResponse.fromJson(jsonDecode( userdata!)))));
+      }else{
+        Navigator.of(context).push(_createRoute());
+      }
+    
     });
   }
   Route _createRoute() {
+
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) =>MyHomePage(title: "Login Page", GSMID: GSMId??"",),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

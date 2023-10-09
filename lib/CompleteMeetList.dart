@@ -35,7 +35,7 @@ class _ComplteteMeetListState extends State<ComplteteMeetList> {
 
         selectedDate = picked;
         _FromDate.value = TextEditingValue(text:  "${picked?.toLocal()}".split(' ')[0]);
-        fromDateGlobal=_FromDate.value.toString();
+        fromDateGlobal=_FromDate.value.text.toString();
 
       });
   }
@@ -50,14 +50,14 @@ class _ComplteteMeetListState extends State<ComplteteMeetList> {
       setState(() {
         selectedDate = picked;
         _ToDate.value = TextEditingValue(text: "${picked?.toLocal()}".split(' ')[0]);
-        toDateGlobal=_ToDate.value.toString();
+        toDateGlobal=_ToDate.value.text.toString();
 
 
       });
   }
 
   void getDates() {
-    var fromDate = new DateTime.now().subtract(Duration(days: 1));
+    var fromDate = new DateTime.now();
     var  toDate  = new DateTime.now();
     var formatter = new DateFormat('yyyy-MM-dd');
 
@@ -170,6 +170,7 @@ class _ComplteteMeetListState extends State<ComplteteMeetList> {
                     padding: new EdgeInsets.all(4),
                     child: GestureDetector(
                       onTap: (){
+
                         getScheduleMeetingList(fromDateGlobal, toDateGlobal);
                         _isLoading=true;
                       },
@@ -177,12 +178,12 @@ class _ComplteteMeetListState extends State<ComplteteMeetList> {
                         width: _width / 5,
                         height: _height / 20,
                         decoration: new BoxDecoration(
-                            color: const Color(0xFF0A5CFF),
+                            color: Colors.indigo,
                             borderRadius: new BorderRadius.all(
                                 new Radius.circular(_height / 90)),
                             boxShadow: [
                               new BoxShadow(
-                                  color: Colors.blueAccent.shade100,
+                                  color: Colors.indigo.shade100,
                                   blurRadius: 2.0,
                                   offset: new Offset(3, 3.0))
                             ]),

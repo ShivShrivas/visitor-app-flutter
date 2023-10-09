@@ -36,6 +36,7 @@ class _ActionableListState extends State<ActionableList> {
 
         selectedDate = picked;
         _FromDate.value = TextEditingValue(text:  "${picked?.toLocal()}".split(' ')[0]);
+        print("_FromDate.value ${_FromDate.value}");
         fromDateGlobal=_FromDate.text.toString();
        // getScheduleMeetingList(fromDateGlobal, toDateGlobal);
 
@@ -62,14 +63,17 @@ class _ActionableListState extends State<ActionableList> {
   }
 
   void getDates() {
-    var fromDate = new DateTime.now().subtract(Duration(days: 30));
+    var fromDate = new DateTime.now();
     var toDate = new DateTime.now();
     var formatter = new DateFormat('yyyy-MM-dd');
 
     setState(() {
+      // print("fromDateGlobal $fromDateGlobal");
+      // print("fromDateGlobal $toDateGlobal");
       fromDateGlobal = formatter.format(fromDate).toString();
       toDateGlobal = formatter.format(toDate).toString();
-
+      print("fromDateGlobal $fromDateGlobal");
+      print("fromDateGlobal $toDateGlobal");
     });
   }
 
@@ -173,6 +177,8 @@ class _ActionableListState extends State<ActionableList> {
                     padding: new EdgeInsets.all(4),
                     child: GestureDetector(
                       onTap: (){
+
+                        // getDates();
                         getScheduleMeetingList(fromDateGlobal, toDateGlobal);
                         _isLoading=true;
                       },
@@ -180,12 +186,12 @@ class _ActionableListState extends State<ActionableList> {
                         width: _width / 5,
                         height: _height / 20,
                         decoration: new BoxDecoration(
-                            color: const Color(0xFF0A5CFF),
+                            color: Colors.indigo,
                             borderRadius: new BorderRadius.all(
                                 new Radius.circular(_height / 90)),
                             boxShadow: [
                               new BoxShadow(
-                                  color: Colors.blueAccent.shade100,
+                                  color: Colors.indigo.shade100,
                                   blurRadius: 2.0,
                                   offset: new Offset(3, 3.0))
                             ]),

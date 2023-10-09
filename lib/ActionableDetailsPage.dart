@@ -19,9 +19,21 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
   final _formKeyRemark = GlobalKey<FormState>();
 
   TextEditingController remarkController = TextEditingController();
-
+  setImage(String url) {
+    if (url != null) {
+      if (url != "") {
+        return Image.network(
+            '${url.replaceAll("../", "http://stonemen.bsninfotech.org/")}');
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    print("listResponse ${jsonEncode(widget.listResponse)}");
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
 
@@ -58,7 +70,8 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
                             children: <Widget>[
                               new CircleAvatar(
                                 backgroundImage:
-                                new AssetImage('assets/images/ic_launcher.png'),
+                                new AssetImage('assets/images/user.png'),
+                                foregroundImage: setImage(widget.listResponse.photo),
                                 radius: _height / 10,
                               ),
                               new SizedBox(
@@ -349,7 +362,7 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
                                               ),
                                             ),
                                             TextSpan(
-                                                text: "BelongingCode",
+                                                text: "Belonging Name",
                                                 style:
                                                 TextStyle(fontSize: 15, color: Colors.grey)),
                                           ],
@@ -358,7 +371,7 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
                                       Padding(
                                         padding: EdgeInsets.symmetric(horizontal: 4),
                                         child: Text(
-                                          widget.listResponse.belongingCode,
+                                          widget.listResponse.belongingName,
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 14,
@@ -377,7 +390,7 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
 
                      Row(
                                 crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
                                   new Padding(
                                     padding: new EdgeInsets.only(top: 0),
@@ -438,66 +451,66 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
                                       ),
                                     ),
                                   ),
-                                  new Padding(
-                                    padding: new EdgeInsets.only(top: 0),
-                                    child: GestureDetector(
-                                      onTap: (){
-                                        openDialogForRemarks("WALK IN",4);
-
-                                      },
-                                      child: new Container(
-                                        width: _width / 5,
-                                        height: _height / 20,
-                                        decoration: new BoxDecoration(
-                                            color: const Color(0xFF3058F8),
-                                            borderRadius: new BorderRadius.all(
-                                                new Radius.circular(_height / 90)),
-                                            boxShadow: [
-                                              new BoxShadow(
-                                                  color: Colors.blueAccent.shade100,
-                                                  blurRadius: 2.0,
-                                                  offset: new Offset(3, 3.0))
-                                            ]),
-                                        child: new Center(
-                                          child: new Text('WALK IN',
-                                              style: new TextStyle(
-                                                  fontSize: 12.0,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold)),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  new Padding(
-                                    padding: new EdgeInsets.only(top: 0),
-                                    child: GestureDetector(
-                                      onTap: (){
-                                        openDialogForRemarks("ON WAIT",5);
-                                      },
-                                      child: new Container(
-                                        width: _width / 5,
-                                        height: _height / 20,
-                                        decoration: new
-                                        BoxDecoration(
-                                            color: const Color(0xFFFFE70E),
-                                            borderRadius: new BorderRadius.all(
-                                                new Radius.circular(_height / 90)),
-                                            boxShadow: [
-                                              new BoxShadow(
-                                                  color: Colors.yellow.shade100,
-                                                  blurRadius: 2.0,
-                                                  offset: new Offset(3, 3.0))
-                                            ]),
-                                        child: new Center(
-                                          child: new Text('ON WAIT',
-                                              style: new TextStyle(
-                                                  fontSize: 12.0,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold)),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  // new Padding(
+                                  //   padding: new EdgeInsets.only(top: 0),
+                                  //   child: GestureDetector(
+                                  //     onTap: (){
+                                  //       openDialogForRemarks("WALK IN",4);
+                                  //
+                                  //     },
+                                  //     child: new Container(
+                                  //       width: _width / 5,
+                                  //       height: _height / 20,
+                                  //       decoration: new BoxDecoration(
+                                  //           color: const Color(0xFF3058F8),
+                                  //           borderRadius: new BorderRadius.all(
+                                  //               new Radius.circular(_height / 90)),
+                                  //           boxShadow: [
+                                  //             new BoxShadow(
+                                  //                 color: Colors.blueAccent.shade100,
+                                  //                 blurRadius: 2.0,
+                                  //                 offset: new Offset(3, 3.0))
+                                  //           ]),
+                                  //       child: new Center(
+                                  //         child: new Text('WALK IN',
+                                  //             style: new TextStyle(
+                                  //                 fontSize: 12.0,
+                                  //                 color: Colors.white,
+                                  //                 fontWeight: FontWeight.bold)),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  // new Padding(
+                                  //   padding: new EdgeInsets.only(top: 0),
+                                  //   child: GestureDetector(
+                                  //     onTap: (){
+                                  //       openDialogForRemarks("ON WAIT",5);
+                                  //     },
+                                  //     child: new Container(
+                                  //       width: _width / 5,
+                                  //       height: _height / 20,
+                                  //       decoration: new
+                                  //       BoxDecoration(
+                                  //           color: const Color(0xFFFFE70E),
+                                  //           borderRadius: new BorderRadius.all(
+                                  //               new Radius.circular(_height / 90)),
+                                  //           boxShadow: [
+                                  //             new BoxShadow(
+                                  //                 color: Colors.yellow.shade100,
+                                  //                 blurRadius: 2.0,
+                                  //                 offset: new Offset(3, 3.0))
+                                  //           ]),
+                                  //       child: new Center(
+                                  //         child: new Text('ON WAIT',
+                                  //             style: new TextStyle(
+                                  //                 fontSize: 12.0,
+                                  //                 color: Colors.black,
+                                  //                 fontWeight: FontWeight.bold)),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
                                 ],
                               ),
 

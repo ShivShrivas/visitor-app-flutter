@@ -2,6 +2,7 @@ class ActionableListResponse {
   ActionableListResponse({
       required this.authPersionName,
       required this.transId,
+      required this.photo,
       required this.visitorName,
       required this.purposeName,
       required this.physicalVisitorPassName,
@@ -34,6 +35,7 @@ class ActionableListResponse {
     mobileNo = json['MobileNo']??"";
     status = json['Status']??"";
     remark = json['Remark']??"";
+    photo = json['Photo']??"";
   }
  late String authPersionName;
  late String transId;
@@ -51,6 +53,7 @@ class ActionableListResponse {
  late String mobileNo;
  late String status;
  late String remark;
+ late String photo;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -70,6 +73,7 @@ class ActionableListResponse {
     map['MobileNo'] = mobileNo??"";
     map['Status'] = status??"";
     map['Remark'] = remark??"";
+    map['Photo'] = photo??"";
     return map;
   }
 

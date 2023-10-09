@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:visitor_app_flutter/MyHomePage.dart';
 import 'package:visitor_app_flutter/SplashScreen.dart';
 import 'package:visitor_app_flutter/models/MeetingWithResponse.dart';
@@ -279,7 +280,10 @@ class _DashboardState extends State<Dashboard> {
                                       actions: <Widget>[
                                     MaterialButton(
                                     child: Text("YES"),
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      SharedPreferences pref =await SharedPreferences.getInstance() ;
+                                      pref.setString('userData', "");
+                                      pref.setString("token", "");
                                      // SystemNavigator.pop();
                                       Navigator.push(
                                           context,

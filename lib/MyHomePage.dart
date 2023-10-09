@@ -76,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
        Clipboard.setData(ClipboardData(text: widget.GSMID));
        String user = jsonEncode(loginResponse);
        pref.setString('userData', user);
+       pref.setString("token", widget.GSMID);
        _sendDataToSecondScreen(context,loginResponse);
        setState(() {
          _loading=false;
