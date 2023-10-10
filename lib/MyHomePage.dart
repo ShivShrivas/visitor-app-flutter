@@ -75,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
        SharedPreferences pref = await SharedPreferences.getInstance();
        Clipboard.setData(ClipboardData(text: widget.GSMID));
        String user = jsonEncode(loginResponse);
+       print("userdata $user");
        pref.setString('userData', user);
        pref.setString("token", widget.GSMID);
        _sendDataToSecondScreen(context,loginResponse);

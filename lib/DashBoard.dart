@@ -87,7 +87,7 @@ class _DashboardState extends State<Dashboard> {
     print("person code"+selectedPerson);
     Map<String, dynamic> body = {
       "TransID": "",
-      "MeetingDate": date + "T" + time.split(" ")[0] + ":00",
+      "MeetingDate": "${date}T${time.split(" ")[0]}:00",
       "PVNo": "000005",
       "MobileNo": mobile,
       "EmailId": email,
@@ -95,11 +95,12 @@ class _DashboardState extends State<Dashboard> {
       "PurposeId": selectedPurpose,
       "AuthorizedOrOtherPersonCode": selectedPerson.split("|")[0],
       "StatusId": 1,
+      "Showtime": "${time.split(" ")[0]}:00",
       "RelationshipId": widget.loginResponse.relationshipId,
       "SessionId": "1",
       "FYId": "1",
-      "CreatedBy": "400",
-      "UpdatedBy": "400",
+      "CreatedBy": widget.loginResponse.userId,
+      "UpdatedBy": widget.loginResponse.userId,
       "Action": "1"
     };
     String jsonBody = json.encode(body);
@@ -120,6 +121,7 @@ class _DashboardState extends State<Dashboard> {
         const SnackBar(content: Text('Meeting Schedule Successfully')),
 
       );
+      SendNotificationToHost(name, selectedPurpose, mobile, selectedPerson);
       setState(() {
         Navigator.pop(dialogContext);
         nameController.clear();
@@ -127,7 +129,7 @@ class _DashboardState extends State<Dashboard> {
         mobileController.clear();
         timeController.clear();
         dateController.clear();
-        SendNotificationToHost(name, selectedPurpose, mobile, selectedPerson);
+
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -691,16 +693,30 @@ class _DashboardState extends State<Dashboard> {
       String mobile, String selectedPerson) async {
     String? GSMID = "";
     String? purpose = "";
+    print("name $name");
+    print("selectedPurpose $selectedPurpose");
+    print("selectedPerson $selectedPerson");
+
+
     for (var i = 0; i < meetingWithResponseList.length; i++) {
+      print("selectedPerson ${meetingWithResponseList[i].code}== $selectedPerson");
       if (meetingWithResponseList[i].code == selectedPerson) {
+        print("GSMID selected${meetingWithResponseList[i].GSMId}");
+
         GSMID = meetingWithResponseList[i].GSMId;
       }
-
+    }
 
       for (var i = 0; i < currencies.length; i++) {
+        print("selectedpurpose ${currencies[i].code}== $selectedPurpose");
+
         if (currencies[i].code == selectedPurpose) {
+         print("purpose selected${currencies[i].purposeName}");
           purpose = currencies[i].purposeName;
         }
+      }
+      print("GSMID if got $GSMID");
+      print("GSMID if got $purpose");
         Map<String, dynamic> body = {
           "deviceId": GSMID,
           "VisitorName": name,
@@ -719,13 +735,13 @@ class _DashboardState extends State<Dashboard> {
           encoding: encoding,
         ));
         print(response);
-        final String parsed = json.decode(response.body);
+
         print("send notification  ${response.body}");
       }
 
       // currencies
-    }
-  }
+
+
 }
 
 //update Attendence set sginin=' ' where id=
