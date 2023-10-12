@@ -35,8 +35,7 @@ class _ActionableListState extends State<ActionableList> {
       setState(() {
 
         selectedDate = picked;
-        _FromDate.value = TextEditingValue(text:  "${picked?.toLocal()}".split(' ')[0]);
-        print("_FromDate.value ${_FromDate.value}");
+        _FromDate.value = TextEditingValue(text:  DateFormat("dd-MM-yyyy").format(picked));
         fromDateGlobal=_FromDate.text.toString();
        // getScheduleMeetingList(fromDateGlobal, toDateGlobal);
 
@@ -53,7 +52,7 @@ class _ActionableListState extends State<ActionableList> {
       setState(() {
         selectedDate = picked;
 
-        _ToDate.value = TextEditingValue(text: "${picked?.toLocal()}".split(' ')[0]);
+        _ToDate.value = TextEditingValue(text: DateFormat("dd-MM-yyyy").format(picked));
         toDateGlobal=_ToDate.text.toString();
 
        // getScheduleMeetingList(fromDateGlobal, toDateGlobal);
@@ -65,7 +64,7 @@ class _ActionableListState extends State<ActionableList> {
   void getDates() {
     var fromDate = new DateTime.now();
     var toDate = new DateTime.now();
-    var formatter = new DateFormat('yyyy-MM-dd');
+    var formatter = new DateFormat('dd-MM-yyyy');
 
     setState(() {
       // print("fromDateGlobal $fromDateGlobal");

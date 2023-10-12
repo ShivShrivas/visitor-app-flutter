@@ -35,7 +35,7 @@ class _OnGoingMeetListState extends State<OnGoingMeetList> {
       setState(() {
         print(picked);
         selectedDate = picked;
-        _FromDate.value = TextEditingValue(text:  "${picked?.toLocal()}".split(' ')[0]);
+        _FromDate.value = TextEditingValue(text:  DateFormat("dd-MM-yyyy").format(picked));
         fromDateGlobal=_FromDate.value.text.toString();
 
       });
@@ -50,7 +50,7 @@ class _OnGoingMeetListState extends State<OnGoingMeetList> {
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
-        _ToDate.value = TextEditingValue(text: "${picked?.toLocal()}".split(' ')[0]);
+        _ToDate.value = TextEditingValue(text: DateFormat("dd-MM-yyyy").format(picked));
         toDateGlobal=_ToDate.value.text.toString();
 
 
@@ -60,7 +60,7 @@ class _OnGoingMeetListState extends State<OnGoingMeetList> {
   void getDates() {
     var fromDate = new DateTime.now();
     var  toDate   = new DateTime.now();
-    var formatter = new DateFormat('yyyy-MM-dd');
+    var formatter = new DateFormat('dd-MM-yyyy');
 
     setState(() {
       fromDateGlobal = formatter.format(fromDate).toString();

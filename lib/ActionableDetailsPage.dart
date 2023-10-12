@@ -22,7 +22,7 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
   setImage(String url) {
     if (url != null) {
       if (url != "") {
-        return Image.network(
+        return NetworkImage(
             '${url.replaceAll("../", "http://stonemen.bsninfotech.org/")}');
       } else {
         return null;
@@ -68,11 +68,11 @@ class _ActionableDetailsPageState extends State<ActionableDetailsPage> {
                           child: new Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              new CircleAvatar(
-                                backgroundImage:
-                                new AssetImage('assets/images/user.png'),
-                                foregroundImage: setImage(widget.listResponse.photo),
-                                radius: _height / 10,
+                              CircleAvatar(
+                                radius: 80.0,
+                                backgroundImage: widget.listResponse.photo == null
+                                    ? AssetImage("assets/images/user.png") as ImageProvider
+                                    : setImage(widget.listResponse.photo),
                               ),
                               new SizedBox(
                                 height: _height / 50,
