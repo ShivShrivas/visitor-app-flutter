@@ -260,7 +260,9 @@ class _DashboardState extends State<Dashboard> {
                                           ),
                                         ),
                                         SizedBox(height: 4),
-                                        Text(
+                                        SizedBox(
+                                          width: 200,
+                                          child: Text(
                                           widget.loginResponse.schoolAddress,
                                           style: GoogleFonts.openSans(
                                             textStyle: TextStyle(
@@ -268,7 +270,7 @@ class _DashboardState extends State<Dashboard> {
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600),
                                           ),
-                                        ),
+                                        ),),
                                       ],
                                     ),
                                   ],

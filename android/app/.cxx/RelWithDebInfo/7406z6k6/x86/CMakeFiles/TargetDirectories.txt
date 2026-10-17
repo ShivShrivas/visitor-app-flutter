@@ -1,0 +1,2 @@
+/Users/shivamsavita/StudioProjects/visitor-app-flutter/android/app/.cxx/RelWithDebInfo/7406z6k6/x86/CMakeFiles/edit_cache.dir
+/Users/shivamsavita/StudioProjects/visitor-app-flutter/android/app/.cxx/RelWithDebInfo/7406z6k6/x86/CMakeFiles/rebuild_cache.dir

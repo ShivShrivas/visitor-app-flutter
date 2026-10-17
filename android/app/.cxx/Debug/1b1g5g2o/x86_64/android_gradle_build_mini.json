@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/shivamsavita/downloads/flutter_sdk/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/shivamsavita/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/shivamsavita/StudioProjects/visitor-app-flutter/android/app/.cxx/Debug/1b1g5g2o/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/shivamsavita/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/shivamsavita/StudioProjects/visitor-app-flutter/android/app/.cxx/Debug/1b1g5g2o/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}
