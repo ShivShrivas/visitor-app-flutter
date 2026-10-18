@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 class MeetingWithResponse {
   String? code;
@@ -21,13 +20,14 @@ int? UserId;
   });
 
   MeetingWithResponse.fromJson(dynamic json) {
-    code = json['Code'];
-    name = json['Name'];
-    departmentName = json['DepartmentName'];
-    AuthorizedName = json['AuthorizedName'];
-    FilterName = json['FilterName'];
-    UserId = json['UserId'];
-    GSMId = json['GSMId'];
+    // Tolerant parsing: the API may send numbers as strings or vice versa.
+    code = json['Code']?.toString();
+    name = json['Name']?.toString();
+    departmentName = json['DepartmentName']?.toString();
+    AuthorizedName = json['AuthorizedName']?.toString();
+    FilterName = json['FilterName']?.toString();
+    UserId = int.tryParse('${json['UserId'] ?? ''}');
+    GSMId = json['GSMId']?.toString();
   }
 
 

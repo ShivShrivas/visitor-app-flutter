@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:visitor_app_flutter/models/LoginResponse.dart';
 
-import 'Utils/AdaptiveTextSize.dart';
+import 'theme/app_theme.dart';
+import 'widgets/app_widgets.dart';
 
 class UserProfile extends StatefulWidget {
-
   const UserProfile({Key? key}) : super(key: key);
 
   @override
@@ -15,251 +15,112 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-    LoginResponse user=LoginResponse(0, "",  0,  "",  "",  0, "", 0,  "",  "",  0,  0,  0,  false,  false,  "",  "",  "",  "",  "", "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  "",  0,  "",  "",  "",  0,  "");
+  LoginResponse? user;
+
   @override
-   getDataFromSP() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    Map json = jsonDecode(pref.getString("userData").toString());
-    setState(() {
-      user = LoginResponse.fromJson(json);
-    });
-
-
-
-  }
-@override
   void initState() {
-  getDataFromSP();
     super.initState();
+    getDataFromSP();
   }
+
+  Future<void> getDataFromSP() async {
+    final pref = await SharedPreferences.getInstance();
+    final raw = pref.getString("userData");
+    if (raw == null || raw.isEmpty) return;
+    final parsed = LoginResponse.fromJson(jsonDecode(raw));
+    if (mounted) setState(() => user = parsed);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-
-          body: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-
-
-                  Colors.white,
-                  Colors.white38
-  ]
-              ),
-            ),
-            child: Column(
+    final u = user;
+    return Scaffold(
+      appBar: AppBar(title: const Text('Profile')),
+      body: u == null
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
               children: [
-                const SizedBox(
-                  height: 15,
+                SurfaceCard(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      AppAvatar(
+                          imageUrl: u.profilePic.isNotEmpty
+                              ? u.profilePic
+                              : u.branchLogo,
+                          name: u.userName,
+                          size: 88),
+                      const SizedBox(height: 14),
+                      Text(
+                        valueOrDash(u.userName),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      if (u.designation.isNotEmpty || u.loginAs.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        StatusPill(
+                          label: u.designation.isNotEmpty
+                              ? u.designation
+                              : u.loginAs,
+                          color: AppColors.primary,
+                          background: AppColors.primarySoft,
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
-                 ListTile(
-                  onTap: (){
-                    Navigator.pop(context);
-                  },
-                  leading: Icon(Icons.arrow_back),
-
+                const SizedBox(height: 22),
+                const SectionTitle('Account'),
+                const SizedBox(height: 10),
+                SurfaceCard(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  child: Column(children: [
+                    InfoRow(
+                        icon: Icons.mail_outline_rounded,
+                        label: 'Email',
+                        value: u.emailId),
+                    const Divider(),
+                    InfoRow(
+                        icon: Icons.phone_outlined,
+                        label: 'Mobile',
+                        value: u.mobileNo),
+                    const Divider(),
+                    InfoRow(
+                        icon: Icons.history_rounded,
+                        label: 'Last sign-in',
+                        value: u.lastLogin),
+                  ]),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-
-                      padding: EdgeInsets.all(5),
-                      clipBehavior: Clip.antiAlias,
-                      child:  setImage(user.branchLogo),
-                      width: 70.0,
-                      height: 70.0,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(75.0)),
-                          boxShadow: [
-                            BoxShadow(
-                                blurRadius: 2.0,
-                                color: Colors.black)
-                          ]),
-                    ),
-                  ],
+                const SizedBox(height: 22),
+                const SectionTitle('Organisation'),
+                const SizedBox(height: 10),
+                SurfaceCard(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  child: Column(children: [
+                    InfoRow(
+                        icon: Icons.apartment_rounded,
+                        label: 'Name',
+                        value: u.schoolName),
+                    const Divider(),
+                    InfoRow(
+                        icon: Icons.location_on_outlined,
+                        label: 'Address',
+                        value: u.schoolAddress),
+                    const Divider(),
+                    InfoRow(
+                        icon: Icons.date_range_rounded,
+                        label: 'Academic year',
+                        value: u.activeAcademicYear),
+                  ]),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      user.userName.toString(),
-
-                      style:
-                      TextStyle(fontWeight: FontWeight.w900, fontSize:
-                      AdaptiveTextSize().getadaptiveTextSize(context, 20)),
-                    )
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children:  [Text("Login As: ${user.loginAs}")],
-                ),
-                const SizedBox(
-                  height: 7,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children:  [
-                     Text(
-
-                        user.schoolName.toString()+"\n"+user.schoolAddress.toString(),
-                        style: TextStyle(fontSize:
-                        AdaptiveTextSize().getadaptiveTextSize(context, 15)),
-                      textAlign: TextAlign.center,),
-
-
-                  ],
-                ),const SizedBox(
-                  height: 15,
-                ),
-                Container(
-
-                  child: Expanded(
-                      child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Card(
-                            margin:
-                            const EdgeInsets.only(left: 35, right: 35, bottom: 10),
-                            color: Colors.white70,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
-                            child: const ListTile(
-                              leading: Icon(
-                                Icons.privacy_tip_sharp,
-                                color: Colors.black54,
-                              ),
-                              title: Text(
-                                'Privacy',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                              trailing: Icon(
-                                Icons.arrow_forward_ios_outlined,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Card(
-                            color: Colors.white70,
-                            margin:
-                            const EdgeInsets.only(left: 35, right: 35, bottom: 10),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
-                            child: const ListTile(
-                              leading:
-                              Icon(Icons.help_outline, color: Colors.black54),
-                              title: Text(
-                                'Help & Support',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                              trailing: Icon(
-                                Icons.arrow_forward_ios_outlined,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Card(
-                            color: Colors.white70,
-                            margin:
-                            const EdgeInsets.only(left: 35, right: 35, bottom: 10),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
-                            child: const ListTile(
-                              leading: Icon(
-                                Icons.privacy_tip_sharp,
-                                color: Colors.black54,
-                              ),
-                              title: Text(
-                                'Settings',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                              trailing: Icon(Icons.arrow_forward_ios_outlined),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Card(
-                            color: Colors.white70,
-                            margin:
-                            const EdgeInsets.only(left: 35, right: 35, bottom: 10),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
-                            child: const ListTile(
-                              leading: Icon(
-                                Icons.add_reaction_sharp,
-                                color: Colors.black54,
-                              ),
-                              title: Text(
-                                'Invite a Friend',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                              trailing: Icon(
-                                Icons.arrow_forward_ios_outlined,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Card(
-                            color: Colors.white70,
-                            margin:
-                            const EdgeInsets.only(left: 35, right: 35, bottom: 10),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
-                            child: const ListTile(
-                              leading: Icon(
-                                Icons.logout,
-                                color: Colors.black54,
-                              ),
-                              title: Text(
-                                'Logout',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                              trailing: Icon(Icons.arrow_forward_ios_outlined),
-                            ),
-                          )
-                        ],
-                      )),
-                )
               ],
             ),
-          ),
-        ));
+    );
   }
-
-
-    setImage(String url) {
-      if(url!=null){
-        return Image.network('${url.replaceAll("../", "http://stonemen.bsninfotech.org/")}');
-
-      }else{
-        return  null;
-      }
-    }
 }

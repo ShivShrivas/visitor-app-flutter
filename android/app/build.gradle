@@ -13,6 +13,14 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+// Release signing: create android/key.properties (storeFile, storePassword, keyAlias, keyPassword)
+// to sign with your own keystore. Without it, release builds fall back to the debug key.
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.withReader('UTF-8') { reader -> keystoreProperties.load(reader) }
+}
+
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
     flutterVersionCode = '1'
@@ -26,16 +34,16 @@ if (flutterVersionName == null) {
 android {
     namespace 'com.stonemen.visitorapp'
     compileSdk 36
-    ndkVersion "27.0.12077973"
+    ndkVersion "30.0.16138531"
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
         coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 
     defaultConfig {
@@ -48,16 +56,18 @@ android {
 
     signingConfigs {
         release {
-            keyAlias 'key0'
-            keyPassword '123456'
-            storeFile file('/Users/shivamsavita/visitor_app.jks')
-            storePassword '123456'
+            if (keystorePropertiesFile.exists()) {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

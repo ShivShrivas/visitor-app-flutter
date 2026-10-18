@@ -1,164 +1,232 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:visitor_app_flutter/ActionableList.dart';
 import 'package:visitor_app_flutter/CompleteMeetList.dart';
 import 'package:visitor_app_flutter/OnGoingMeetList.dart';
 import 'package:visitor_app_flutter/ScheduleMeetList.dart';
 
-class GridDashboard extends StatefulWidget {
-  final int relationShipId;
-  final int userId;
-  const GridDashboard({Key? key, required this.relationShipId,required this.userId}) : super(key: key);
+import 'theme/app_theme.dart';
+import 'widgets/app_widgets.dart';
 
-  @override
-  State<GridDashboard> createState() => _GridDashboardState();
+/// Today's counts per category; null = still loading / unknown.
+class DashboardCounts {
+  const DashboardCounts({
+    this.actionable,
+    this.ongoing,
+    this.scheduled,
+    this.completed,
+  });
+  final int? actionable;
+  final int? ongoing;
+  final int? scheduled;
+  final int? completed;
 }
 
-class _GridDashboardState extends State<GridDashboard> {
-  Items item1 = new Items(
-      title: "Actionable List",
-      subtitle: "Actionable List find here",
-      event: "",
-      img: "assets/images/guest_list.png");
+/// Colourful staggered status cards (Actionable / Ongoing / Scheduled /
+/// Completed). Tapping a card opens its list; [onReturn] fires when the
+/// user comes back so the dashboard can refresh.
+class GridDashboard extends StatelessWidget {
+  final int relationShipId;
+  final int userId;
+  final DashboardCounts counts;
+  final VoidCallback? onReturn;
 
-  Items item2 = new Items(
-    title: "Ongoing Meeting",
-    subtitle: "Ongoing meeting list",
-    event: "",
-    img: "assets/images/ongoingmeeting.png",
-  );
-  Items item3 = new Items(
-    title: "Schedule Meeting",
-    subtitle: "Schedule Meetings are here",
-    event: "",
-    img: "assets/images/calendar.png",
-  );
-  Items item4 = new Items(
-    title: "Complete Meeting",
-    subtitle: "completed meeting list",
-    event: "",
-    img: "assets/images/agreement.png",
-  );
+  const GridDashboard({
+    Key? key,
+    required this.relationShipId,
+    required this.userId,
+    this.counts = const DashboardCounts(),
+    this.onReturn,
+  }) : super(key: key);
 
-
+  Future<void> _open(BuildContext context, WidgetBuilder builder) async {
+    await Navigator.push(context, MaterialPageRoute(builder: builder));
+    onReturn?.call();
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<Items> myList = [item1, item2, item3, item4];
-    var color = Color.fromRGBO(203, 205, 255, 1.0);
-    return Flexible(
-      child: GridView.count(
-        childAspectRatio: 1.0,
-        padding: EdgeInsets.only(left: 16, right: 16),
-        crossAxisCount: 2,
-        crossAxisSpacing: 18,
-        mainAxisSpacing: 18,
-        children: myList.map((data) {
-          return GestureDetector(
-            onTap: (){
-              if(data.title.compareTo("Actionable List")==0){
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ActionableList(relationShipId: widget.relationShipId,userId:widget.userId),
-                    ));
-              }else if(data.title.compareTo("Ongoing Meeting")==0){
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OnGoingMeetList(relationShipId: widget.relationShipId,userId:widget.userId),
-                    ));
-              }else if(data.title.compareTo("Schedule Meeting")==0){
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ScheduleMeetList(relationShipId: widget.relationShipId,userId:widget.userId),
-                    ));
-              }else if(data.title.compareTo("Complete Meeting")==0){
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ComplteteMeetList(relationShipId: widget.relationShipId,userId:widget.userId),
-                    ));
-              }
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    Colors.white,
-                    Color.fromRGBO(158, 162, 255, 1.0),
-                  ],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.indigoAccent.shade100,
-                    blurRadius: 10.0,
-                  ),
-                ],
-                color: Color.fromRGBO(169, 171, 255, 1.0),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
+    final actionable = _StatusCard(
+      title: 'Actionable',
+      count: counts.actionable,
+      unit: 'awaiting you',
+      tone: MeetingTone.actionable,
+      height: 184,
+      onTap: () => _open(
+          context,
+          (_) => ActionableList(
+              relationShipId: relationShipId, userId: userId)),
+    );
+    final ongoing = _StatusCard(
+      title: 'Ongoing',
+      count: counts.ongoing,
+      unit: 'in progress',
+      tone: MeetingTone.ongoing,
+      height: 150,
+      onTap: () => _open(
+          context,
+          (_) => OnGoingMeetList(
+              relationShipId: relationShipId, userId: userId)),
+    );
+    final scheduled = _StatusCard(
+      title: 'Scheduled',
+      count: counts.scheduled,
+      unit: 'today',
+      tone: MeetingTone.scheduled,
+      height: 150,
+      onTap: () => _open(
+          context,
+          (_) => ScheduleMeetList(
+              relationShipId: relationShipId, userId: userId)),
+    );
+    final completed = _StatusCard(
+      title: 'Completed',
+      count: counts.completed,
+      unit: 'done today',
+      tone: MeetingTone.completed,
+      height: 184,
+      onTap: () => _open(
+          context,
+          (_) => ComplteteMeetList(
+              relationShipId: relationShipId, userId: userId)),
+    );
 
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Image.asset(data.img, width: 42),
-                  SizedBox(height: 14),
-                  Text(
-                    data.title,
-                    style: GoogleFonts.openSans(
-                      textStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    data.subtitle,
-                    style: GoogleFonts.openSans(
-                      textStyle: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 14),
-                  Text(
-                    data.event,
-                    style: GoogleFonts.openSans(
-                      textStyle: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ) ;
-
-
-
-        }).toList(),
-      ),
+    const gap = 14.0;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(children: [actionable, const SizedBox(height: gap), scheduled]),
+        ),
+        const SizedBox(width: gap),
+        Expanded(
+          child: Column(children: [
+            ongoing,
+            const SizedBox(height: gap),
+            completed,
+          ]),
+        ),
+      ],
     );
   }
 }
 
-class Items {
-  String title;
-  String subtitle;
-  String event;
-  String img;
-  Items({required this.title, required this.subtitle, required this.event, required this.img});
+class _StatusCard extends StatelessWidget {
+  const _StatusCard({
+    required this.title,
+    required this.count,
+    required this.unit,
+    required this.tone,
+    required this.height,
+    required this.onTap,
+  });
+
+  final String title;
+  final int? count;
+  final String unit;
+  final MeetingTone tone;
+  final double height;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = tone.color;
+    return Container(
+      height: height,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadius.lg + 2),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color.lerp(c, Colors.white, 0.08)!, c],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: c.withValues(alpha: 0.35),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(AppRadius.lg + 2),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Stack(
+            children: [
+              // decorative circle
+              Positioned(
+                right: -26,
+                top: -26,
+                child: Container(
+                  width: 96,
+                  height: 96,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.12),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.22),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(tone.icon, color: Colors.white, size: 22),
+                    ),
+                    const Spacer(),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: count == null
+                              ? Container(
+                                  margin: const EdgeInsets.only(top: 4),
+                                  width: 70,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.3),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                )
+                              : Text(
+                                  '$count $unit',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.85),
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                        ),
+                        const Icon(Icons.arrow_forward_rounded,
+                            color: Colors.white, size: 20),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
-
-
-

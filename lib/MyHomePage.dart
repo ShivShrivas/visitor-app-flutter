@@ -1,339 +1,346 @@
 import 'dart:async';
 import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'DashBoard.dart';
 import 'models/LoginResponse.dart';
+import 'theme/app_theme.dart';
+import 'widgets/app_widgets.dart';
+import 'network/api_logger.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage( {super.key, required this.title,required this.GSMID});
+  const MyHomePage({super.key, required this.title, required this.GSMID});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title,GSMID;
+  final String title, GSMID;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late bool _loading=false;
-  late bool _passwordVisible=false;
-  late double _progressValue;
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController userIdController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final FocusNode _passwordFocus = FocusNode();
+
+  bool _loading = false;
+  bool _passwordVisible = false;
 
   @override
   void initState() {
     super.initState();
-    _loading = false;
-    _progressValue = 0.0;
+    // Test credentials are pre-filled only in debug builds, never in release.
+    if (kDebugMode) {
+      userIdController.text = 'ANISHKA';
+      passwordController.text = '59005';
+    }
   }
-  TextEditingController userIdController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  int _counter = 0;
+
+  @override
+  void dispose() {
+    userIdController.dispose();
+    passwordController.dispose();
+    _passwordFocus.dispose();
+    super.dispose();
+  }
 
   Future<void> logIn(String userId, String password) async {
-    print(userId);
-    print(password);
-    print(widget.GSMID);
-
-    Map<String, dynamic> body = { 'UserName': userId,
+    final Map<String, dynamic> body = {
+      'UserName': userId,
       'Password': password,
       'LastLoginWith': 'W',
       'DisplayCode': 'RAMFAG',
       'GroupCode': '01',
       'SocietyCode': '002',
-      'GSMID':widget.GSMID
-       };
-    String jsonBody = json.encode(body);
-    final encoding = Encoding.getByName('utf-8');
-    final url = Uri.parse(
-        'http://stonemen.bsninfotech.org/api/LoginApi/UserAuthentication');
-    final headers = {'Content-Type': 'application/json'};
-    var response = (await http.post(
-      url,
-      headers: headers,
-      body: jsonBody,
-      encoding: encoding,
-    ));
-   if(LoginResponse.fromJson(json.decode(response.body)[0]).userId!=0 ||LoginResponse.fromJson(json.decode(response.body)[0]).userId!=null){
-     final List<dynamic> parsed = json.decode(response.body);
+      'GSMID': widget.GSMID
+    };
 
-     final loginResponse = LoginResponse.fromJson(parsed[0]);
-     print("login response ${loginResponse.userId}");
-     if(loginResponse.userId!=0 && loginResponse.userId!=null){
-       SharedPreferences pref = await SharedPreferences.getInstance();
-       Clipboard.setData(ClipboardData(text: widget.GSMID));
-       String user = jsonEncode(loginResponse);
-       print("userdata $user");
-       pref.setString('userData', user);
-       pref.setString("token", widget.GSMID);
-       _sendDataToSecondScreen(context,loginResponse);
-       setState(() {
-         _loading=false;
-       });
-     }else{
-       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-         content: Text("User Id or Password Incorrect"),
-       ));
-       setState(() {
-         _loading=false;
-       });
-     }
-   }else{
-     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-       content: Text("Something went wrong"),
-     ));
-     setState(() {
-       _loading=false;
-     });
-   }
+    try {
+      final response = await apiClient
+          .post(
+            Uri.parse(
+                'http://stonemen.bsninfotech.org/api/LoginApi/UserAuthentication'),
+            headers: {'Content-Type': 'application/json'},
+            body: json.encode(body),
+            encoding: Encoding.getByName('utf-8'),
+          );
 
+      final decoded = json.decode(response.body);
+      if (decoded is! List || decoded.isEmpty) {
+        _showError("Something went wrong. Please try again.");
+        return;
+      }
 
+      final loginResponse = LoginResponse.fromJson(decoded[0]);
+      if (loginResponse.userId != 0) {
+        final pref = await SharedPreferences.getInstance();
+        Clipboard.setData(ClipboardData(text: widget.GSMID));
+        await pref.setString('userData', jsonEncode(loginResponse));
+        await pref.setString("token", widget.GSMID);
+        if (!mounted) return;
+        _sendDataToSecondScreen(context, loginResponse);
+      } else {
+        _showError("Incorrect User ID or password");
+      }
+    } on TimeoutException {
+      _showError("The server is taking too long. Please try again.");
+    } catch (e) {
+      appLogger.e('login error', error: e);
+      _showError("Unable to sign in. Check your connection and try again.");
+    }
   }
 
-  void _sendDataToSecondScreen(BuildContext context, LoginResponse loginResponse) {
-
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Dashboard(loginResponse: loginResponse, LoginResponse: loginResponse,),
-        ));
+  void _showError(String message) {
+    if (!mounted) return;
+    showAppSnack(context, message, error: true);
   }
 
-
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  width: double.maxFinite,
-                  height: 400,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage('assets/images/background.png'),
-                          fit: BoxFit.fill
-                      )
-                  ),
-                  child: Stack(
-                    children: <Widget>[
-                      Positioned(
-                        width: 200,
-                        height: 200,
-                        child:
-                        SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(height: 100,),
-                              Text("Welcome",style: TextStyle(color:Colors.white70,fontSize: 26,fontWeight: FontWeight.w300),),
-                              Text("to",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w300,color: Colors.white60),),
-                              Text("Visitor App",style: TextStyle(fontSize: 35,fontWeight: FontWeight.w500,color: Colors.white),),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      Positioned(
-                        right: 40,
-                        top: 40,
-                        width: 80,
-                        height: 120,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage('assets/images/clock.png')
-                              )
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        child:Container(
-                          margin: EdgeInsets.only(top: 50),
-
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-
-         Text("┬┴┬┴┬┴┤Login Here├┬┴┬┴┬┴┬", style:     TextStyle(
-           fontSize: 20,
-           color: Colors.deepPurple,
-
-           shadows: [
-             Shadow(
-               blurRadius: 10.0,
-               color: Colors.deepPurpleAccent,
-               offset: Offset(5.0, 5.0),
-             ),
-           ],
-         )
-           ,),
-
-                Padding(
-                  padding: EdgeInsets.all(30.0),
-                  child: Column(
-                    children: <Widget>[
-
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.deepPurple),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Color.fromRGBO(122, 106, 217, 0.2),
-                                  blurRadius: 40.0,
-                                  offset: Offset(4, 10),
-                                  spreadRadius: 5.0
-                              )
-                            ]
-                        ),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.all(8.0),
-                              decoration: BoxDecoration(
-                                  border: Border(bottom: BorderSide(color: Colors.deepPurple.shade50))
-                              ),
-                              child: TextField(
-                                onTap: (){
-                                  setState(() {
-                                    _loading=false;
-                                  });
-                                },
-                                controller:userIdController ,
-                                style: TextStyle(
-                                    fontSize:16
-                                ),
-                                scrollPadding: EdgeInsets.only(bottom:40),
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: "User ID",
-                                    hintStyle: TextStyle(color: Colors.grey[400],fontSize: 16),
-                                    icon: Icon(Icons.account_circle),
-                                    iconColor: Colors.deepPurple.shade300
-
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(8.0),
-                              child: TextField(
-                                onTap: (){
-                                  setState(() {
-                                    _loading=false;
-                                  });
-                                },
-                                controller: passwordController,
-
-                                obscureText: !_passwordVisible,
-                                style: TextStyle(
-                                    fontSize: 16
-
-                                ),
-                                scrollPadding: EdgeInsets.only(bottom:40),
-
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "Password",
-                                  hintStyle: TextStyle(color: Colors.grey[400],fontSize: 16),
-                                  icon: Icon(Icons.lock_open_sharp),
-                                  iconColor: Colors.deepPurple.shade300,
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      // Based on passwordVisible state choose the icon
-                                      _passwordVisible
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      color: Colors.deepPurpleAccent.shade100,
-                                    ),
-                                    onPressed: () {
-                                      // Update the state i.e. toogle the state of passwordVisible variable
-                                      setState(() {
-                                        _passwordVisible = !_passwordVisible;
-                                      });
-                                    },
-                                  ),
-
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 40,),
-                      !_loading? GestureDetector(
-                        onTap: () async {
-                            if(userIdController.text.length>1 && passwordController.text.length>1){
-                              setState((){
-                                _loading=true;
-                              });
-                              await logIn(userIdController.text.toString(),passwordController.text.toString());
-                              setState((){
-                                _loading=false;
-                              });
-
-                            }else{
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text("Please Enter User ID and Password properly"),
-                              ));
-                            }
-
-                        },
-                        child:  Card(
-                          elevation: 10,
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                gradient: LinearGradient(
-                                    colors: [
-                                      Color.fromRGBO(143, 148, 251, 1),
-                                      Color.fromRGBO(143, 148, 251, .6),
-                                    ]
-                                )
-                            ),
-                            child: Center(
-                              child: Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontFamily: 'RaleWay',fontSize: 18),),
-                            ),
-                          ),
-                        ),
-                      ):Center(child:CircularProgressIndicator()),
-
-                      SizedBox(height: 20,),
-                      Text("Forgot Password?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        )
+  void _sendDataToSecondScreen(
+      BuildContext context, LoginResponse loginResponse) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => Dashboard(
+          loginResponse: loginResponse,
+          LoginResponse: loginResponse,
+        ),
+      ),
     );
   }
 
-  void _updateProgress() {
-
-
-
+  Future<void> _submit() async {
+    FocusScope.of(context).unfocus();
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    setState(() => _loading = true);
+    await logIn(userIdController.text.trim(), passwordController.text);
+    if (mounted) setState(() => _loading = false);
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: SingleChildScrollView(
+          child: Column(
+              children: [
+                _header(media.padding.top),
+                Transform.translate(
+                  offset: const Offset(0, -48),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 460),
+                        child: _formCard(),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: media.padding.bottom + 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.lock_outline_rounded,
+                          size: 14, color: AppColors.textMuted),
+                      SizedBox(width: 6),
+                      Text(
+                        "Secure sign-in  •  Version 2.0",
+                        style: TextStyle(
+                            fontSize: 12, color: AppColors.textMuted),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+        ),
+      ),
+    );
+  }
+
+  Widget _header(double topInset) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(28, topInset + 36, 28, 84),
+      decoration: const BoxDecoration(
+        gradient: AppColors.brandGradient,
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(36)),
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            right: -70,
+            top: -90,
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.07),
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const BrandMark(size: 60),
+              const SizedBox(height: 28),
+              const Text(
+                "Welcome back",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "Sign in to manage visitors and meetings",
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.8),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _formCard() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(22, 26, 22, 22),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        boxShadow: AppShadows.card,
+      ),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              "Sign in",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              "Use the credentials provided by your administrator.",
+              style: TextStyle(fontSize: 13.5, color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: 24),
+            _label("User ID"),
+            TextFormField(
+              controller: userIdController,
+              enabled: !_loading,
+              textInputAction: TextInputAction.next,
+              autofillHints: const [AutofillHints.username],
+              onFieldSubmitted: (_) => _passwordFocus.requestFocus(),
+              validator: (v) => (v == null || v.trim().length < 2)
+                  ? "Please enter your User ID"
+                  : null,
+              decoration: const InputDecoration(
+                hintText: "Enter your user ID",
+                prefixIcon: Icon(Icons.person_outline_rounded),
+              ),
+            ),
+            const SizedBox(height: 18),
+            _label("Password"),
+            TextFormField(
+              controller: passwordController,
+              focusNode: _passwordFocus,
+              enabled: !_loading,
+              obscureText: !_passwordVisible,
+              textInputAction: TextInputAction.done,
+              autofillHints: const [AutofillHints.password],
+              onFieldSubmitted: (_) => _submit(),
+              validator: (v) => (v == null || v.length < 2)
+                  ? "Please enter your password"
+                  : null,
+              decoration: InputDecoration(
+                hintText: "Enter your password",
+                prefixIcon: const Icon(Icons.lock_outline_rounded),
+                suffixIcon: IconButton(
+                  tooltip: _passwordVisible ? 'Hide password' : 'Show password',
+                  icon: Icon(_passwordVisible
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined),
+                  onPressed: () =>
+                      setState(() => _passwordVisible = !_passwordVisible),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () => showAppSnack(
+                  context,
+                  "Please contact your administrator to reset your password.",
+                ),
+                child: const Text("Forgot password?"),
+              ),
+            ),
+            const SizedBox(height: 8),
+            FilledButton(
+              onPressed: _loading ? null : _submit,
+              style: FilledButton.styleFrom(
+                disabledBackgroundColor:
+                    AppColors.primary.withValues(alpha: 0.7),
+              ),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: _loading
+                    ? const SizedBox(
+                        key: ValueKey('loading'),
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.4,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Row(
+                        key: ValueKey('label'),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Sign in"),
+                          SizedBox(width: 8),
+                          Icon(Icons.arrow_forward_rounded, size: 20),
+                        ],
+                      ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _label(String text) => Padding(
+        padding: const EdgeInsets.only(bottom: 8, left: 2),
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 13.5,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
+      );
 }

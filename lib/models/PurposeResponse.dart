@@ -5,8 +5,8 @@ class PurposeResponse {
   PurposeResponse({this.code, this.purposeName});
 
   PurposeResponse.fromJson(Map<String, dynamic> json) {
-    code = json['Code'];
-    purposeName = json['PurposeName'];
+    code = int.tryParse('${json['Code'] ?? ''}');
+    purposeName = json['PurposeName']?.toString();
   }
 
   Map<String, dynamic> toJson() {

@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 
-class NotificationPage extends StatefulWidget {
+import 'widgets/app_widgets.dart';
+
+class NotificationPage extends StatelessWidget {
   const NotificationPage({Key? key}) : super(key: key);
 
   @override
-  State<NotificationPage> createState() => _NotificationPageState();
-}
-
-class _NotificationPageState extends State<NotificationPage> {
-  @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.indigo,
-          title: const Text('Meeting Notifications'),
-        ),
-        body: Center(
-        )
+    return Scaffold(
+      appBar: AppBar(title: const Text('Notifications')),
+      body: const StateMessage(
+        icon: Icons.notifications_none_rounded,
+        title: "You're all caught up",
+        message: 'New visitor and meeting alerts will appear here.',
+      ),
     );
   }
 }
